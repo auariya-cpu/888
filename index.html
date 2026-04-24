@@ -309,6 +309,15 @@
       padding: 6px 12px; background: var(--green); border: none;
       border-radius: 6px; color: #fff; font-family: 'Sarabun', sans-serif;
       font-size: 12px; font-weight: 700; cursor: pointer;
+      display: flex; align-items: center; gap: 5px; white-space: nowrap;
+    }
+    .psavebtn:disabled { cursor: not-allowed; }
+    .btn-spin {
+      width: 11px; height: 11px; border-radius: 50%;
+      border: 2px solid rgba(255,255,255,.3);
+      border-top-color: #fff;
+      animation: spin .6s linear infinite;
+      flex-shrink: 0;
     }
     .pdone {
       margin-top: 7px; padding: 6px 10px;
@@ -820,8 +829,8 @@ async function saveChamp() {
   const b = document.getElementById('bsave');
   if (b.disabled) return;
   b.disabled = true;
-  b.textContent = '⏳ กำลังบันทึก...';
-  b.style.opacity = '.6';
+  b.innerHTML = '<span class="btn-spin" style="width:13px;height:13px;border-width:2px;display:inline-block;vertical-align:middle;margin-right:6px;border-radius:50%;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;animation:spin .6s linear infinite;"></span>กำลังบันทึก...';
+  b.style.opacity = '.7';
   try {
     await gasCall('saveChampionPicks', { picks: S.picks });
     toast('บันทึกทีมแชมป์แล้ว','ok');
@@ -1064,7 +1073,11 @@ async function savePred(matchId) {
 
   // ป้องกันกดซ้ำ
   if (btn && btn.disabled) return;
-  if (btn) { btn.disabled = true; btn.textContent = '⏳'; btn.style.opacity = '.6'; }
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="btn-spin"></span>กำลังบันทึก';
+    btn.style.opacity = '.7';
+  }
 
   const hs  = document.getElementById('hs-'+safe)?.value;
   const as  = document.getElementById('as-'+safe)?.value;
