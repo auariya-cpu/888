@@ -912,7 +912,7 @@ async function loadLb() {
         ${avatarHtml}
         <div class="lb-info">
           <div class="lb-name">${displayName}${meTag}</div>
-          <div class="lb-stat">${u.points} pt · ผลถูก ${cr} · สกอร์ถูก ${cs}</div>
+          <div class="lb-stat">${u.points} pt · ผลถูก ${cr} · สกอร์ถูก ${cs}${u.missed > 0 ? ` · <span style="color:var(--red)">ลืมทาย ${u.missed} (-${u.penalty} pt)</span>` : ''}</div>
           <div class="lb-acc">
             <div class="lb-acc-row">
               <span class="lb-acc-lbl">ผล</span>
