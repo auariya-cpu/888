@@ -613,11 +613,25 @@ window.addEventListener('load', async () => {
   const st   = p.get('state');
 
   if (code) {
-    // ลบ code ออกจาก URL ทันที ก่อน call GAS เพื่อป้องกัน double-use
+    // ป้องกัน double-use ด้วย flag — ถ้า code นี้ใช้แล้วให้ข้าม
+    const usedKey = 'used_' + code.slice(0, 16);
+    if (localStorage.getItem(usedKey)) {
+      // code ถูกใช้แล้ว — ดู session ว่า login อยู่หรือเปล่า
+      history.replaceState({}, '', location.pathname);
+      const stored = localStorage.getItem('wc26u');
+      if (stored) { S.user = JSON.parse(stored); await boot(); }
+      else showScreen('login');
+      return;
+    }
+    // mark ว่าใช้แล้ว ก่อน call GAS
+    localStorage.setItem(usedKey, '1');
+    // ลบ code ออกจาก URL ทันที
     history.replaceState({}, '', location.pathname);
     showScreen('loading');
     document.getElementById('loading-msg').textContent = 'กำลังเข้าสู่ระบบ...';
     await handleCallback(code, st);
+    // ลบ flag หลัง 5 นาที
+    setTimeout(() => localStorage.removeItem(usedKey), 5 * 60 * 1000);
     return;
   }
 
