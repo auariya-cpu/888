@@ -446,17 +446,22 @@
 <!-- MAIN -->
 <div id="main-app">
   <div class="profile">
-    <img id="ua" src="" alt=""
-      style="background:var(--line);"
-      onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 48 48%22%3E%3Crect width=%2248%22 height=%2248%22 rx=%2224%22 fill=%22%231e2130%22/%3E%3Ctext y=%2232%22 x=%2224%22 text-anchor=%22middle%22 font-size=%2224%22%3E👤%3C/text%3E%3C/svg%3E'" />
-    <div style="flex:1">
+    <div id="ua-wrap" style="position:relative;flex-shrink:0;">
+      <img id="ua" src="" alt="" crossorigin="anonymous"
+        referrerpolicy="no-referrer"
+        style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);background:var(--line);display:block;"
+        onerror="this.style.display='none';document.getElementById('ua-fb').style.display='flex'" />
+      <div id="ua-fb" style="display:none;width:48px;height:48px;border-radius:50%;background:var(--line);border:2px solid var(--gold);align-items:center;justify-content:center;font-size:22px;">👤</div>
+    </div>
+    <div style="flex:1;min-width:0;">
       <div class="pname" id="un">-</div>
       <div class="ppts" id="upt">0 <small>pt</small></div>
     </div>
     <button onclick="logout()" style="
-      background:none; border:1px solid var(--line); border-radius:6px;
-      color:var(--muted); font-size:11px; padding:5px 10px;
-      font-family:'Sarabun',sans-serif; cursor:pointer; flex-shrink:0;
+      background:none;border:1px solid var(--line);border-radius:6px;
+      color:var(--muted);font-size:11px;padding:6px 12px;
+      font-family:'Sarabun',sans-serif;cursor:pointer;flex-shrink:0;
+      white-space:nowrap;
     ">ออกจากระบบ</button>
   </div>
 
@@ -678,12 +683,14 @@ async function handleCallback(code, st) {
 // ══════════════════════════════════════════════════
 async function boot() {
   showScreen('main');
-  // ตั้งชื่อก่อน รูปค่อย load ทีหลัง
   document.getElementById('un').textContent = S.user.name;
   document.getElementById('upt').innerHTML  = (S.user.points||0) + ' <small>pt</small>';
-  // set รูป — LINE profile picture ต้องใช้ referrerPolicy
-  const img = document.getElementById('ua');
+  // set รูป profile
   if (S.user.picture) {
+    const img = document.getElementById('ua');
+    const fb  = document.getElementById('ua-fb');
+    img.style.display = 'block';
+    fb.style.display  = 'none';
     img.referrerPolicy = 'no-referrer';
     img.src = S.user.picture;
   }
