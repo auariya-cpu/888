@@ -449,10 +449,15 @@
     <img id="ua" src="" alt=""
       style="background:var(--line);"
       onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 48 48%22%3E%3Crect width=%2248%22 height=%2248%22 rx=%2224%22 fill=%22%231e2130%22/%3E%3Ctext y=%2232%22 x=%2224%22 text-anchor=%22middle%22 font-size=%2224%22%3E👤%3C/text%3E%3C/svg%3E'" />
-    <div>
+    <div style="flex:1">
       <div class="pname" id="un">-</div>
       <div class="ppts" id="upt">0 <small>pt</small></div>
     </div>
+    <button onclick="logout()" style="
+      background:none; border:1px solid var(--line); border-radius:6px;
+      color:var(--muted); font-size:11px; padding:5px 10px;
+      font-family:'Sarabun',sans-serif; cursor:pointer; flex-shrink:0;
+    ">ออกจากระบบ</button>
   </div>
 
   <!-- Champion -->
@@ -549,40 +554,14 @@ const TEAMS = [
 let S = { user:null, picks:[], preds:{}, matches:[], tab:'all' };
 
 // ══════════════════════════════════════════════════
-//  JSONP + fetch fallback — รองรับ mobile Safari
+//  GAS CALL — JSONP only (เสถียรที่สุดสำหรับ GAS)
 // ══════════════════════════════════════════════════
 function gasCall(action, data={}) {
-  const payload = encodeURIComponent(JSON.stringify({ lineId: S.user?.lineId, ...data }));
-  const url = `${CFG.GAS}?action=${action}&data=${payload}`;
-
-  // ลอง fetch ก่อน (mobile Safari รองรับ แต่ GAS อาจ CORS block)
-  // ถ้า fetch ไม่ได้ → fallback JSONP
-  return fetchGas(url).catch(() => jsonpGas(url));
-}
-
-function fetchGas(url) {
-  return fetch(url + '&t=' + Date.now(), {
-    method: 'GET',
-    mode: 'cors',
-  }).then(r => {
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    return r.text();
-  }).then(text => {
-    // GAS อาจคืน HTML หรือ JSON
-    const match = text.match(/\{[\s\S]*\}/);
-    if (!match) throw new Error('No JSON in response');
-    const d = JSON.parse(match[0]);
-    if (!d.ok) throw new Error(d.message || 'Error');
-    return d;
-  });
-}
-
-function jsonpGas(url) {
   return new Promise((resolve, reject) => {
     const cbName = 'gc_' + Date.now() + '_' + Math.random().toString(36).slice(2);
     const timer  = setTimeout(() => {
-      cleanup(cbName); reject(new Error('Timeout'));
-    }, 15000);
+      cleanup(cbName); reject(new Error('Timeout — ลองใหม่'));
+    }, 20000);
 
     window[cbName] = (res) => {
       clearTimeout(timer); cleanup(cbName);
@@ -590,10 +569,12 @@ function jsonpGas(url) {
       else reject(new Error((res && res.message) || 'Error'));
     };
 
-    const sc = document.createElement('script');
-    sc.id  = cbName + '_sc';
-    sc.src = url + '&callback=' + cbName + '&t=' + Date.now();
-    sc.onerror = () => { clearTimeout(timer); cleanup(cbName); reject(new Error('Script error')); };
+    const payload = encodeURIComponent(JSON.stringify({ lineId: S.user?.lineId, ...data }));
+    const url = `${CFG.GAS}?action=${action}&data=${payload}&callback=${cbName}&_=${Date.now()}`;
+    const sc  = document.createElement('script');
+    sc.id     = cbName + '_sc';
+    sc.src    = url;
+    sc.onerror = () => { clearTimeout(timer); cleanup(cbName); reject(new Error('Network error')); };
     document.head.appendChild(sc);
   });
 }
@@ -605,45 +586,42 @@ function cleanup(cbName) {
 }
 
 // ══════════════════════════════════════════════════
-//  INIT
+//  INIT — ป้องกัน double-call ด้วย flag
 // ══════════════════════════════════════════════════
+let _handling = false; // global flag ป้องกัน race condition
+
 window.addEventListener('load', async () => {
   const p    = new URLSearchParams(location.search);
   const code = p.get('code');
   const st   = p.get('state');
 
   if (code) {
-    // ป้องกัน double-use ด้วย flag — ถ้า code นี้ใช้แล้วให้ข้าม
-    const usedKey = 'used_' + code.slice(0, 16);
+    // ป้องกัน double-use
+    if (_handling) return;
+    _handling = true;
+
+    const usedKey = 'used_' + code.slice(0, 20);
     if (localStorage.getItem(usedKey)) {
-      // code ถูกใช้แล้ว — ดู session ว่า login อยู่หรือเปล่า
       history.replaceState({}, '', location.pathname);
       const stored = localStorage.getItem('wc26u');
       if (stored) { S.user = JSON.parse(stored); await boot(); }
       else showScreen('login');
       return;
     }
-    // mark ว่าใช้แล้ว ก่อน call GAS
+
     localStorage.setItem(usedKey, '1');
-    // ลบ code ออกจาก URL ทันที
     history.replaceState({}, '', location.pathname);
     showScreen('loading');
     document.getElementById('loading-msg').textContent = 'กำลังเข้าสู่ระบบ...';
     await handleCallback(code, st);
-    // ลบ flag หลัง 5 นาที
     setTimeout(() => localStorage.removeItem(usedKey), 5 * 60 * 1000);
     return;
   }
 
   const stored = localStorage.getItem('wc26u');
   if (stored) {
-    try {
-      S.user = JSON.parse(stored);
-      await boot();
-    } catch(e) {
-      localStorage.removeItem('wc26u');
-      showScreen('login');
-    }
+    try { S.user = JSON.parse(stored); await boot(); }
+    catch(e) { localStorage.removeItem('wc26u'); showScreen('login'); }
   } else {
     showScreen('login');
   }
@@ -1034,6 +1012,16 @@ function closeHelp(e) {
   if (e.target === document.getElementById('help-modal')) {
     document.getElementById('help-modal').classList.remove('open');
   }
+}
+
+// ══════════════════════════════════════════════════
+//  LOGOUT
+// ══════════════════════════════════════════════════
+function logout() {
+  if (!confirm('ออกจากระบบ?')) return;
+  localStorage.removeItem('wc26u');
+  S.user = null; S.picks = []; S.preds = {}; S.matches = [];
+  showScreen('login');
 }
 
 // ══════════════════════════════════════════════════
