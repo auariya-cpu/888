@@ -685,7 +685,6 @@ async function boot() {
   showScreen('main');
   document.getElementById('un').textContent = S.user.name;
   document.getElementById('upt').innerHTML  = (S.user.points||0) + ' <small>pt</small>';
-  // set รูป profile
   if (S.user.picture) {
     const img = document.getElementById('ua');
     const fb  = document.getElementById('ua-fb');
@@ -695,15 +694,10 @@ async function boot() {
     img.src = S.user.picture;
   }
   initTeamSearch();
-  await Promise.all([loadUser(), loadMatches(), loadPlayerCount()]);
-}
-
-async function loadPlayerCount() {
-  try {
-    const r = await gasCall('getLeaderboard');
-    const count = (r.leaderboard || []).length;
-    document.getElementById('player-count').textContent = count;
-  } catch(e) { /* ไม่แสดง error */ }
+  // โหลด user data (preds) ก่อนเสมอ แล้วค่อย render matches
+  // เพื่อให้ทายที่เคยบันทึกไว้แสดงตั้งแต่แรก
+  await loadUser();
+  await Promise.all([loadMatches(), loadPlayerCount()]);
 }
 
 async function loadUser() {
@@ -713,10 +707,8 @@ async function loadUser() {
     S.picks = r.championPicks || [];
     S.preds = r.predictions   || {};
     document.getElementById('upt').innerHTML = r.points + ' <small>pt</small>';
-    // อัพเดทรูปอีกครั้งหลัง getUserData เพราะ lineLogin อาจได้ picture URL ไม่ครบ
     if (S.user.picture) {
-      const img = document.getElementById('ua');
-      img.src = S.user.picture;
+      document.getElementById('ua').src = S.user.picture;
     }
     renderPicks();
     if (r.championDeadline) {
@@ -739,10 +731,15 @@ async function loadMatches() {
   }
 }
 
+async function loadPlayerCount() {
+  try {
+    const r = await gasCall('getLeaderboard');
+    document.getElementById('player-count').textContent = (r.leaderboard||[]).length;
+  } catch(e) {}
+}
 // ══════════════════════════════════════════════════
 //  TEAM SEARCH DROPDOWN (แก้ปัญหา dropdown ไม่แสดง)
 // ══════════════════════════════════════════════════
-function initTeamSearch() {
   const input = document.getElementById('tsearch');
   const dd    = document.getElementById('tdd');
 
@@ -946,8 +943,17 @@ function mcard(m) {
   const pd = pr.result
     ? `<div class="pdone">${predResultTxt}${predScoreTxt}</div>` : '';
 
-  // panel ทาย — ผล และ สกอร์ แยกอิสระจากกัน
-  const pp = can ? `
+  // เช็คว่าถึงเวลาแข่งแล้วหรือยัง (จาก matchDate จริง ไม่ใช่แค่ status)
+  const kickoffTime = m.matchDate ? new Date(m.matchDate) : null;
+  const isKickedOff = kickoffTime ? (new Date() >= kickoffTime) : (m.status !== 'upcoming');
+  const canPredict  = !isKickedOff; // ทายได้เฉพาะก่อนเวลาแข่ง
+
+  // panel ทาย
+  let pp = '';
+  if (canPredict) {
+    const hasPred   = !!pr.result;
+    const saveFaded = hasPred ? 'opacity:.45;' : '';
+    pp = `
     <div class="ppanel">
       <div class="ppanel-label">ทายผล (ชนะ/เสมอ/แพ้)</div>
       <div class="pbts">
@@ -960,9 +966,13 @@ function mcard(m) {
         <input class="sinpn" type="number" min="0" max="20" placeholder="0" id="hs-${safe}" value="${pr.homeScore??''}" />
         <span class="ssep">—</span>
         <input class="sinpn" type="number" min="0" max="20" placeholder="0" id="as-${safe}" value="${pr.awayScore??''}" />
-        <button class="psavebtn" onclick="savePred('${m.id}')">บันทึก</button>
+        <button class="psavebtn" style="${saveFaded}" onclick="savePred('${m.id}')">${hasPred ? 'แก้ไข' : 'บันทึก'}</button>
       </div>
-    </div>` : '';
+    </div>`;
+  } else if (pr.result) {
+    // เตะแล้ว — แสดงที่ทายไว้อย่างเดียว ไม่ให้แก้
+    pp = '';
+  }
 
   const info = fmtMatchInfo(m.matchDate, m.venue);
 
