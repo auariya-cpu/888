@@ -222,8 +222,8 @@
     /* LEADERBOARD */
     .lb-tog {
       width: 100%; background: none; border: none; color: var(--text);
-      font-family: 'Sarabun', sans-serif; font-size: 10px; font-weight: 700;
-      letter-spacing: 1.5px; text-transform: uppercase;
+      font-family: 'Sarabun', sans-serif; font-size: 13px; font-weight: 700;
+      letter-spacing: .5px;
       padding: 11px 14px; cursor: pointer;
       display: flex; align-items: center; justify-content: space-between;
     }
@@ -489,7 +489,7 @@
   <!-- Leaderboard -->
   <div class="sec">
     <button class="lb-tog" onclick="toggleLb()">
-      ตารางสถิติ
+      ตารางสถิติของคุณ
       <span id="lbarr" style="color:var(--muted)">▼</span>
     </button>
     <div class="lb-body" id="lbb">
@@ -826,6 +826,27 @@ async function toggleLb() {
   if (open && !lbDone) { lbDone = true; await loadLb(); }
 }
 
+// ชื่อนักบอลสมมติ (สลับแบบ seed จาก lineId)
+const FAKE_NAMES = [
+  'Ronaldo','Messi','Neymar','Mbappé','Haaland',
+  'Salah','Benzema','Kane','De Bruyne','Modric',
+  'Lewandowski','Vinicius','Pedri','Bellingham','Osimhen',
+  'Saka','Pulisic','Musiala','Gavi','Camavinga',
+];
+const FAKE_AVATARS = [
+  '🧑‍🦱','👨‍🦰','👩‍🦱','🧑‍🦳','👨‍🦲',
+  '🧔','👩‍🦰','🧑','👨','🧑‍🦲',
+];
+
+function getFakeName(lineId, idx) {
+  // ใช้ index ใน leaderboard เพื่อให้ชื่อสลับทุก session
+  return FAKE_NAMES[idx % FAKE_NAMES.length];
+}
+
+function getFakeAvatar(idx) {
+  return FAKE_AVATARS[idx % FAKE_AVATARS.length];
+}
+
 async function loadLb() {
   try {
     const r  = await gasCall('getLeaderboard');
@@ -835,25 +856,34 @@ async function loadLb() {
       return;
     }
     const gc = ['g1','g2','g3'];
-
-    // หา max ทายผล+สกอร์รวม เพื่อคำนวณ % ความแม่น
     const totalMatches = S.matches.filter(m => m.status === 'finished').length || 1;
+    const myLineId = S.user?.lineId;
 
     document.getElementById('lbb').innerHTML = lb.map((u, i) => {
-      const cr = u.correctResults || 0;   // ทายผลถูก
-      const cs = u.correctScores  || 0;   // ทายสกอร์ถูก
+      const isMe = u.lineId === myLineId;
+      const cr = u.correctResults || 0;
+      const cs = u.correctScores  || 0;
       const total = cr + cs;
-      // % ความแม่นผล = correctResults / totalFinishedMatches
-      const pctResult = totalMatches > 0 ? Math.round(cr / totalMatches * 100) : 0;
-      const pctScore  = totalMatches > 0 ? Math.round(cs / totalMatches * 100) : 0;
+      const pctResult = Math.round(cr / totalMatches * 100);
+      const pctScore  = Math.round(cs / totalMatches * 100);
+
+      // ถ้าไม่ใช่ตัวเอง → mask ชื่อ + รูป
+      const displayName = isMe ? u.name : getFakeName(u.lineId, i);
+      const avatarHtml  = isMe
+        ? `<img class="lb-av" src="${u.picture||''}" referrerpolicy="no-referrer" onerror="this.style.display='none'" />`
+        : `<div class="lb-av" style="display:flex;align-items:center;justify-content:center;font-size:20px;background:var(--line);">${getFakeAvatar(i)}</div>`;
+
+      const meTag = isMe
+        ? `<span style="font-size:9px;background:var(--gold);color:var(--bg);border-radius:4px;padding:1px 5px;margin-left:5px;font-weight:700;">คุณ</span>`
+        : '';
 
       return `
-      <div class="lb-row">
+      <div class="lb-row" style="${isMe?'background:rgba(201,168,76,.06);border-left:2px solid var(--gold);':''}">
         <div class="lb-no ${gc[i]||''}">${i+1}</div>
-        <img class="lb-av" src="${u.picture||''}" onerror="this.style.display='none'" />
+        ${avatarHtml}
         <div class="lb-info">
-          <div class="lb-name">${u.name}</div>
-          <div class="lb-stat">${u.points} pt · ทายถูกรวม ${total} ครั้ง</div>
+          <div class="lb-name">${displayName}${meTag}</div>
+          <div class="lb-stat">${u.points} pt · ทายถูก ${total} ครั้ง</div>
           <div class="lb-acc">
             <div class="lb-acc-row">
               <span class="lb-acc-lbl">ผล</span>
