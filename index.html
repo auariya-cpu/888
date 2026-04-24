@@ -608,15 +608,19 @@ function cleanup(cbName) {
 //  INIT
 // ══════════════════════════════════════════════════
 window.addEventListener('load', async () => {
-  const p = new URLSearchParams(location.search);
-  if (p.get('code')) {
+  const p    = new URLSearchParams(location.search);
+  const code = p.get('code');
+  const st   = p.get('state');
+
+  if (code) {
+    // ลบ code ออกจาก URL ทันที ก่อน call GAS เพื่อป้องกัน double-use
+    history.replaceState({}, '', location.pathname);
     showScreen('loading');
     document.getElementById('loading-msg').textContent = 'กำลังเข้าสู่ระบบ...';
-    // แสดง code ย่อๆ เพื่อ debug บน mobile
-    console.log('Got code:', p.get('code').slice(0,8)+'...');
-    await handleCallback(p.get('code'), p.get('state'));
+    await handleCallback(code, st);
     return;
   }
+
   const stored = localStorage.getItem('wc26u');
   if (stored) {
     try {
