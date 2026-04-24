@@ -36,7 +36,8 @@
     }
     .logo { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 3px; color: var(--gold); }
     .sub  { font-size: 10px; color: var(--muted); margin-top: 1px; letter-spacing: 1px; }
-    .n26  { font-family: 'Bebas Neue', sans-serif; font-size: 34px; color: var(--line); }
+    .player-count { font-size: 11px; color: var(--muted); text-align: right; line-height: 1.4; }
+    .player-count strong { display: block; font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: var(--text); }
 
     /* LOGIN */
     #login-screen {
@@ -86,8 +87,9 @@
       border-bottom: 1px solid var(--line);
     }
     .profile img {
-      width: 46px; height: 46px; border-radius: 50%;
-      object-fit: cover; border: 1.5px solid var(--gold); flex-shrink: 0;
+      width: 48px; height: 48px; border-radius: 50%;
+      object-fit: cover; border: 2px solid var(--gold); flex-shrink: 0;
+      background: var(--line);
     }
     .pname { font-weight: 700; font-size: 15px; }
     .ppts  { font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: var(--gold); letter-spacing: 1px; }
@@ -267,7 +269,10 @@
     <div class="logo">WC 2026</div>
     <div class="sub">CANADA · MEXICO · USA</div>
   </div>
-  <div class="n26">26</div>
+  <div class="player-count">
+    <strong id="player-count">—</strong>
+    ผู้เล่น
+  </div>
 </header>
 
 <!-- LOGIN -->
@@ -498,8 +503,16 @@ async function boot() {
   document.getElementById('ua').src = S.user.picture || '';
   document.getElementById('un').textContent = S.user.name;
   document.getElementById('upt').innerHTML  = (S.user.points||0) + ' <small>pt</small>';
-  initTeamSearch(); // setup dropdown ทันที ไม่ต้องรอ
-  await Promise.all([loadUser(), loadMatches()]);
+  initTeamSearch();
+  await Promise.all([loadUser(), loadMatches(), loadPlayerCount()]);
+}
+
+async function loadPlayerCount() {
+  try {
+    const r = await gasCall('getLeaderboard');
+    const count = (r.leaderboard || []).length;
+    document.getElementById('player-count').textContent = count;
+  } catch(e) { /* ไม่แสดง error */ }
 }
 
 async function loadUser() {
@@ -693,7 +706,7 @@ function mcard(m) {
     ? `<div class="snum">${m.homeScore??'-'}-${m.awayScore??'-'}</div>${live?'<div style="font-size:10px;color:var(--red);margin-top:2px"><span class="live-dot"></span>LIVE</div>':''}`
     : `<div class="svs">VS</div>`;
   const pd   = pr.result
-    ? `<div class="pdone">ทายไว้: ${pr.result==='home'?m.homeName+' ชนะ':pr.result==='away'?m.awayName+' ชนะ':'เสมอ'}${pr.homeScore!==undefined?' · '+pr.homeScore+'-'+pr.awayScore:''}</div>` : '';
+    ? `<div class="pdone">ทายไว้: ${pr.result==='home'?m.homeName+' ชนะ':pr.result==='away'?m.awayName+' ชนะ':'เสมอ'}${(pr.homeScore!==undefined && pr.awayScore!==undefined) ? ' · '+(pr.homeScore??0)+'-'+(pr.awayScore??0) : ''}</div>` : '';
   const pp   = can ? `
     <div class="ppanel">
       <div class="pbts">
@@ -736,7 +749,7 @@ async function savePred(matchId) {
   const as=document.getElementById('as-'+safe)?.value;
   const res=S.preds[matchId]?.result;
   if (!res) { toast('เลือกผลก่อน','err'); return; }
-  S.preds[matchId]={ result:res, homeScore:hs!==''?parseInt(hs):undefined, awayScore:as!==''?parseInt(as):undefined };
+  S.preds[matchId]={ result:res, homeScore: hs!=='' ? parseInt(hs) : 0, awayScore: as!=='' ? parseInt(as) : 0 };
   try {
     await gasCall('savePrediction',{ matchId, prediction:S.preds[matchId] });
     toast('บันทึกแล้ว','ok');
