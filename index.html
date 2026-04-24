@@ -713,7 +713,10 @@ async function loadUser() {
     const r = await gasCall('getUserData');
     S.user.points  = r.points;
     S.picks = r.championPicks || [];
-    S.preds = r.predictions   || {};
+    S.preds = {};
+    Object.entries(r.predictions || {}).forEach(([matchId, pred]) => {
+      S.preds[matchId] = { ...pred, _saved: true }; // mark ว่า sync จาก server แล้ว
+    });
     document.getElementById('upt').innerHTML = r.points + ' <small>pt</small>';
     if (S.user.picture) {
       document.getElementById('ua').src = S.user.picture;
@@ -1000,8 +1003,11 @@ function mcard(m) {
   // panel ทาย
   let pp = '';
   if (canPredict) {
-    const hasPred   = !!pr.result;
-    const saveFaded = hasPred ? 'opacity:.45;' : '';
+    // hasSaved = เคยบันทึกไปแล้ว (มี result ใน S.preds ที่ sync จาก server)
+    // ใช้ flag _saved เพื่อแยกว่า "เลือกแล้ว" กับ "บันทึกแล้ว"
+    const hasSaved   = !!(pr._saved && pr.result);
+    const saveFaded  = hasSaved ? 'opacity:.45;' : '';
+    const saveBtnTxt = hasSaved ? 'แก้ไข' : 'บันทึก';
     pp = `
     <div class="ppanel">
       <div class="ppanel-label">ทายผล (ชนะ/เสมอ/แพ้)</div>
@@ -1015,7 +1021,7 @@ function mcard(m) {
         <input class="sinpn" type="number" min="0" max="20" placeholder="0" id="hs-${safe}" value="${pr.homeScore??''}" />
         <span class="ssep">—</span>
         <input class="sinpn" type="number" min="0" max="20" placeholder="0" id="as-${safe}" value="${pr.awayScore??''}" />
-        <button class="psavebtn" style="${saveFaded}" onclick="savePred('${m.id}')">${hasPred ? 'แก้ไข' : 'บันทึก'}</button>
+        <button class="psavebtn" style="${saveFaded}" onclick="savePred('${m.id}')">${saveBtnTxt}</button>
       </div>
     </div>`;
   } else if (pr.result) {
@@ -1078,6 +1084,7 @@ async function savePred(matchId) {
 
   try {
     await gasCall('savePrediction', { matchId, prediction: S.preds[matchId] });
+    S.preds[matchId]._saved = true; // mark ว่าบันทึกสำเร็จแล้ว
     toast('บันทึกแล้ว','ok');
     const m = S.matches.find(x => x.id === matchId);
     if (m) { const el = document.getElementById('mc-'+safe); if(el) el.outerHTML = mcard(m); }
