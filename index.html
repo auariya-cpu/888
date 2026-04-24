@@ -266,7 +266,12 @@
     .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
     .mcard { padding: 12px 14px; border-bottom: 1px solid var(--line); }
     .mcard:last-child { border: none; }
-    .minfo { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); margin-bottom: 8px; }
+    .minfo {
+      display: flex; justify-content: space-between;
+      font-size: 10px; color: var(--muted); margin-bottom: 8px;
+    }
+    .minfo-left { display: flex; flex-direction: column; gap: 1px; }
+    .minfo-right { text-align: right; display: flex; flex-direction: column; gap: 1px; }
     .mrow  { display: grid; grid-template-columns: 1fr 60px 1fr; align-items: center; }
     .tcol  { text-align: center; }
     .tcol .fl { font-size: 20px; display: block; }
@@ -838,6 +843,29 @@ function renderMatches() {
   ml.innerHTML = ms.map(m => mcard(m)).join('');
 }
 
+function fmtMatchInfo(matchDate, venue) {
+  if (!matchDate) return { datetime: '', venue: '' };
+
+  const d = new Date(matchDate);
+  if (isNaN(d)) return { datetime: '', venue: '' };
+
+  // แปลงเป็นเวลาไทย UTC+7
+  const thai = new Date(d.getTime() + 7 * 60 * 60 * 1000);
+
+  const days = ['อา.','จ.','อ.','พ.','พฤ.','ศ.','ส.'];
+  const day  = days[thai.getUTCDay()];
+  const dd   = String(thai.getUTCDate()).padStart(2,'0');
+  const mm   = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.',
+                 'ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'][thai.getUTCMonth()];
+  const hh   = String(thai.getUTCHours()).padStart(2,'0');
+  const min  = String(thai.getUTCMinutes()).padStart(2,'0');
+
+  return {
+    datetime: `${day} ${parseInt(dd)} ${mm}  ${hh}.${min}`,
+    venue: venue || '',
+  };
+}
+
 function sid(id) { return String(id).replace(/[^a-z0-9_-]/gi,'_'); }
 
 function mcard(m) {
@@ -862,11 +890,19 @@ function mcard(m) {
         <button class="psavebtn" onclick="savePred('${m.id}')">บันทึก</button>
       </div>
     </div>` : '';
+
+  const info = fmtMatchInfo(m.matchDate, m.venue);
+
   return `
     <div class="mcard" id="mc-${safe}">
       <div class="minfo">
-        <span>${m.group?'กลุ่ม '+m.group+' · ':''}${m.round||''}</span>
-        <span>${m.dateText||''}</span>
+        <div class="minfo-left">
+          <span>${m.group?'กลุ่ม '+m.group+' · ':''}${m.round||''}</span>
+        </div>
+        <div class="minfo-right">
+          <span style="color:var(--text);font-weight:600">${info.datetime}</span>
+          ${info.venue ? `<span>${info.venue}</span>` : ''}
+        </div>
       </div>
       <div class="mrow">
         <div class="tcol"><span class="fl">${m.homeFlag||'🏳️'}</span><div class="nm">${m.homeName}</div></div>
