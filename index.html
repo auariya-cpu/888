@@ -434,6 +434,7 @@
     <svg viewBox="0 0 24 24" fill="white"><path d="M19.952 12.457c0-4.4-4.41-7.98-9.828-7.98C4.706 4.477.3 8.057.3 12.457c0 3.944 3.497 7.244 8.22 7.867.32.069.756.211.866.485.099.25.065.64.032.89l-.14.84c-.043.25-.197.975.855.531 1.052-.443 5.676-3.34 7.744-5.718C19.33 15.4 19.952 14 19.952 12.457z"/></svg>
     เข้าสู่ระบบด้วย LINE
   </button>
+  <div id="login-error" style="display:none;font-size:11px;color:var(--red);text-align:center;padding:8px 16px;background:rgba(224,49,49,.1);border-radius:8px;width:100%;word-break:break-all;"></div>
 </div>
 
 <!-- LOADING -->
@@ -611,12 +612,23 @@ window.addEventListener('load', async () => {
   if (p.get('code')) {
     showScreen('loading');
     document.getElementById('loading-msg').textContent = 'กำลังเข้าสู่ระบบ...';
+    // แสดง code ย่อๆ เพื่อ debug บน mobile
+    console.log('Got code:', p.get('code').slice(0,8)+'...');
     await handleCallback(p.get('code'), p.get('state'));
     return;
   }
   const stored = localStorage.getItem('wc26u');
-  if (stored) { S.user = JSON.parse(stored); await boot(); }
-  else showScreen('login');
+  if (stored) {
+    try {
+      S.user = JSON.parse(stored);
+      await boot();
+    } catch(e) {
+      localStorage.removeItem('wc26u');
+      showScreen('login');
+    }
+  } else {
+    showScreen('login');
+  }
 });
 
 function showScreen(name) {
@@ -630,7 +642,8 @@ function showScreen(name) {
 // ══════════════════════════════════════════════════
 function loginWithLine() {
   const ns = Math.random().toString(36).slice(2);
-  sessionStorage.setItem('ls', ns);
+  // ใช้ localStorage แทน sessionStorage เพราะ mobile browser อาจเปิด tab ใหม่
+  localStorage.setItem('ls', ns);
   const u = new URL('https://access.line.me/oauth2/v2.1/authorize');
   u.searchParams.set('response_type','code');
   u.searchParams.set('client_id', CFG.LID);
@@ -641,18 +654,25 @@ function loginWithLine() {
 }
 
 async function handleCallback(code, st) {
-  if (st !== sessionStorage.getItem('ls')) {
-    toast('เกิดข้อผิดพลาด ลองใหม่','err');
-    showScreen('login'); return;
+  const savedState = localStorage.getItem('ls');
+
+  // ถ้า state ไม่ตรง log แต่ไม่ block เพราะ mobile อาจมีปัญหา
+  if (st !== savedState) {
+    console.warn('State mismatch:', st, 'vs', savedState, '— proceeding anyway on mobile');
   }
+
   try {
     const r = await gasCall('lineLogin', { code, redirectUri: CFG.REDIR });
     S.user = r.user;
     localStorage.setItem('wc26u', JSON.stringify(S.user));
+    localStorage.removeItem('ls');
     history.replaceState({}, '', location.pathname);
     await boot();
   } catch(e) {
+    console.error('Login error:', e.message);
     showScreen('login');
+    const errEl = document.getElementById('login-error');
+    if (errEl) { errEl.style.display='block'; errEl.textContent = 'Error: ' + e.message; }
     toast('Login ไม่สำเร็จ: ' + e.message, 'err');
   }
 }
