@@ -893,7 +893,6 @@ async function loadLb() {
       const isMe = u.lineId === myLineId;
       const cr = u.correctResults || 0;
       const cs = u.correctScores  || 0;
-      const total = cr + cs;
       const pctResult = Math.round(cr / totalMatches * 100);
       const pctScore  = Math.round(cs / totalMatches * 100);
 
@@ -913,7 +912,7 @@ async function loadLb() {
         ${avatarHtml}
         <div class="lb-info">
           <div class="lb-name">${displayName}${meTag}</div>
-          <div class="lb-stat">${u.points} pt · ทายถูก ${total} ครั้ง</div>
+          <div class="lb-stat">${u.points} pt · ผลถูก ${cr} · สกอร์ถูก ${cs}</div>
           <div class="lb-acc">
             <div class="lb-acc-row">
               <span class="lb-acc-lbl">ผล</span>
