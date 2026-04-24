@@ -815,12 +815,19 @@ function rmPick(i) { S.picks.splice(i,1); renderPicks(); }
 
 async function saveChamp() {
   const b = document.getElementById('bsave');
-  b.disabled = true; b.textContent = 'กำลังบันทึก...';
+  if (b.disabled) return;
+  b.disabled = true;
+  b.textContent = '⏳ กำลังบันทึก...';
+  b.style.opacity = '.6';
   try {
     await gasCall('saveChampionPicks', { picks: S.picks });
     toast('บันทึกทีมแชมป์แล้ว','ok');
   } catch(e) { toast(e.message,'err'); }
-  finally { b.disabled = false; b.textContent = 'บันทึกทีมแชมป์'; }
+  finally {
+    b.disabled = false;
+    b.textContent = 'บันทึกทีมแชมป์';
+    b.style.opacity = '';
+  }
 }
 
 // ══════════════════════════════════════════════════
@@ -1046,18 +1053,40 @@ function setRes(matchId, res) {
 }
 
 async function savePred(matchId) {
-  const safe=sid(matchId);
-  const hs=document.getElementById('hs-'+safe)?.value;
-  const as=document.getElementById('as-'+safe)?.value;
-  const res=S.preds[matchId]?.result;
-  if (!res) { toast('เลือกผลก่อน','err'); return; }
-  S.preds[matchId]={ result:res, homeScore: hs!=='' ? parseInt(hs) : 0, awayScore: as!=='' ? parseInt(as) : 0 };
+  const safe = sid(matchId);
+  const btn  = document.querySelector(`#mc-${safe} .psavebtn`);
+
+  // ป้องกันกดซ้ำ
+  if (btn && btn.disabled) return;
+  if (btn) { btn.disabled = true; btn.textContent = '⏳'; btn.style.opacity = '.6'; }
+
+  const hs  = document.getElementById('hs-'+safe)?.value;
+  const as  = document.getElementById('as-'+safe)?.value;
+  const res = S.preds[matchId]?.result;
+
+  if (!res) {
+    toast('เลือกผลก่อน','err');
+    if (btn) { btn.disabled = false; btn.textContent = 'บันทึก'; btn.style.opacity = ''; }
+    return;
+  }
+
+  S.preds[matchId] = {
+    result:    res,
+    homeScore: hs !== '' ? parseInt(hs) : 0,
+    awayScore: as !== '' ? parseInt(as) : 0,
+  };
+
   try {
-    await gasCall('savePrediction',{ matchId, prediction:S.preds[matchId] });
+    await gasCall('savePrediction', { matchId, prediction: S.preds[matchId] });
     toast('บันทึกแล้ว','ok');
-    const m=S.matches.find(x=>x.id===matchId);
-    if(m){ const el=document.getElementById('mc-'+safe); if(el) el.outerHTML=mcard(m); }
-  } catch(e) { toast(e.message,'err'); }
+    const m = S.matches.find(x => x.id === matchId);
+    if (m) { const el = document.getElementById('mc-'+safe); if(el) el.outerHTML = mcard(m); }
+  } catch(e) {
+    toast(e.message,'err');
+    // คืนปุ่มถ้า error
+    const b2 = document.querySelector(`#mc-${safe} .psavebtn`);
+    if (b2) { b2.disabled = false; b2.textContent = 'แก้ไข'; b2.style.opacity = ''; }
+  }
 }
 
 // ══════════════════════════════════════════════════
