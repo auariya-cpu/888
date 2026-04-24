@@ -18,13 +18,13 @@
       --text:  #eaeaea;
       --muted: #6b7280;
       --r:     10px;
-      --body:  'Sarabun', sans-serif;
-      --head:  'Bebas Neue', sans-serif;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body {
-      font-family: var(--body); background: var(--bg); color: var(--text);
-      max-width: 430px; margin: 0 auto; min-height: 100vh; padding-bottom: 48px;
+      font-family: 'Sarabun', sans-serif;
+      background: var(--bg); color: var(--text);
+      max-width: 430px; margin: 0 auto;
+      min-height: 100vh; padding-bottom: 48px;
     }
 
     /* HEADER */
@@ -34,38 +34,39 @@
       display: flex; align-items: center; justify-content: space-between;
       position: sticky; top: 0; z-index: 90;
     }
-    .logo { font-family: var(--head); font-size: 22px; letter-spacing: 3px; color: var(--gold); }
+    .logo { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 3px; color: var(--gold); }
     .sub  { font-size: 10px; color: var(--muted); margin-top: 1px; letter-spacing: 1px; }
-    .n26  { font-family: var(--head); font-size: 34px; color: var(--line); letter-spacing: -1px; }
+    .n26  { font-family: 'Bebas Neue', sans-serif; font-size: 34px; color: var(--line); }
 
     /* LOGIN */
     #login-screen {
       display: flex; flex-direction: column; align-items: center;
-      justify-content: center; min-height: 85vh; padding: 32px 20px; gap: 16px; text-align: center;
+      justify-content: center; min-height: 85vh;
+      padding: 32px 20px; gap: 16px; text-align: center;
     }
-    .login-year  { font-family: var(--head); font-size: 72px; color: var(--gold); line-height: 1; }
-    .login-title { font-family: var(--head); font-size: 26px; letter-spacing: 2px; }
+    .login-year  { font-family: 'Bebas Neue', sans-serif; font-size: 72px; color: var(--gold); line-height: 1; }
+    .login-title { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 2px; }
     .rule-box {
       width: 100%; background: var(--card); border: 1px solid var(--line);
       border-radius: var(--r); padding: 16px; text-align: left;
     }
     .rule-label { font-size: 10px; color: var(--muted); letter-spacing: 1.5px; margin-bottom: 10px; }
-    .rule-row   { display: flex; align-items: baseline; gap: 10px; padding: 3px 0; }
-    .rule-pt    { font-family: var(--head); font-size: 20px; color: var(--gold); width: 24px; }
-    .rule-txt   { font-size: 13px; color: var(--muted); }
+    .rule-row { display: flex; align-items: baseline; gap: 10px; padding: 3px 0; }
+    .rule-pt  { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--gold); width: 24px; }
+    .rule-txt { font-size: 13px; color: var(--muted); }
     .prize-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 2px; margin-top: 8px; }
-    .prize-pct  { font-family: var(--head); font-size: 22px; }
-    .prize-lbl  { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .prize-pct { font-family: 'Bebas Neue', sans-serif; font-size: 22px; }
+    .prize-lbl { font-size: 11px; color: var(--muted); margin-top: 2px; }
     .btn-line {
       display: flex; align-items: center; justify-content: center; gap: 10px;
       width: 100%; background: var(--green); color: #fff; border: none;
-      border-radius: 8px; padding: 14px; font-family: var(--body);
+      border-radius: 8px; padding: 14px; font-family: 'Sarabun', sans-serif;
       font-size: 15px; font-weight: 700; cursor: pointer;
     }
     .btn-line:active { opacity: .85; }
     .btn-line svg { width: 20px; height: 20px; }
 
-    /* LOADING SCREEN */
+    /* LOADING */
     #loading-screen {
       display: none; flex-direction: column; align-items: center;
       justify-content: center; min-height: 85vh; gap: 16px; color: var(--muted); font-size: 14px;
@@ -89,8 +90,8 @@
       object-fit: cover; border: 1.5px solid var(--gold); flex-shrink: 0;
     }
     .pname { font-weight: 700; font-size: 15px; }
-    .ppts  { font-family: var(--head); font-size: 18px; color: var(--gold); letter-spacing: 1px; }
-    .ppts small { font-family: var(--body); font-size: 12px; color: var(--muted); }
+    .ppts  { font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: var(--gold); letter-spacing: 1px; }
+    .ppts small { font-family: 'Sarabun', sans-serif; font-size: 12px; color: var(--muted); }
 
     /* SECTION */
     .sec { margin: 10px 12px; background: var(--card); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
@@ -103,51 +104,57 @@
     .sec-bd { padding: 14px; }
 
     /* CHAMPION */
-    .champ-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+    .champ-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
     .slot {
       border: 1px dashed var(--line); border-radius: 8px; padding: 12px 6px;
-      text-align: center; min-height: 64px;
+      text-align: center; min-height: 68px;
       display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
     }
     .slot.filled { border: 1px solid var(--gold); background: rgba(201,168,76,.06); }
     .slot .fl  { font-size: 24px; }
     .slot .nm  { font-size: 12px; font-weight: 700; margin-top: 2px; }
-    .slot .rm  { font-size: 10px; color: var(--red); cursor: pointer; margin-top: 3px; }
+    .slot .rm  { font-size: 10px; color: var(--red); cursor: pointer; margin-top: 4px; padding: 2px 6px; }
     .slot .emp { font-size: 11px; color: var(--muted); }
     .dl { font-size: 10px; color: var(--muted); letter-spacing: 0; text-transform: none; }
 
+    /* TEAM SEARCH */
     .swrap { position: relative; }
     .sinp {
       width: 100%; background: var(--bg); border: 1px solid var(--line);
-      border-radius: 7px; padding: 9px 12px; color: var(--text);
-      font-family: var(--body); font-size: 14px; outline: none;
+      border-radius: 7px; padding: 10px 12px; color: var(--text);
+      font-family: 'Sarabun', sans-serif; font-size: 14px; outline: none;
     }
     .sinp:focus { border-color: var(--gold); }
     .sinp::placeholder { color: var(--muted); }
     .tdd {
-      display: none; position: absolute; top: calc(100% + 3px); left: 0; right: 0;
+      position: absolute; top: calc(100% + 3px); left: 0; right: 0;
       background: var(--card); border: 1px solid var(--line);
-      border-radius: 8px; max-height: 170px; overflow-y: auto; z-index: 60;
+      border-radius: 8px; max-height: 200px; overflow-y: auto; z-index: 60;
+      display: none;
     }
     .tdd.open { display: block; }
     .topt {
-      padding: 8px 12px; cursor: pointer; font-size: 13px;
-      display: flex; align-items: center; gap: 8px;
+      padding: 9px 12px; cursor: pointer; font-size: 13px;
+      display: flex; align-items: center; gap: 10px;
       border-bottom: 1px solid var(--line);
     }
     .topt:last-child { border: none; }
     .topt:hover { background: var(--line); }
+    .topt .tfl { font-size: 18px; flex-shrink: 0; }
+    .topt .tnm { flex: 1; }
+    .topt .tgp { font-size: 10px; color: var(--muted); }
+
     .bsave {
       width: 100%; margin-top: 10px; background: var(--blue); color: #fff;
       border: none; border-radius: 7px; padding: 11px;
-      font-family: var(--body); font-size: 14px; font-weight: 700; cursor: pointer;
+      font-family: 'Sarabun', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer;
     }
     .bsave:disabled { opacity: .4; cursor: not-allowed; }
 
     /* LEADERBOARD */
     .lb-tog {
       width: 100%; background: none; border: none; color: var(--text);
-      font-family: var(--body); font-size: 10px; font-weight: 700;
+      font-family: 'Sarabun', sans-serif; font-size: 10px; font-weight: 700;
       letter-spacing: 1.5px; text-transform: uppercase;
       padding: 11px 14px; cursor: pointer;
       display: flex; align-items: center; justify-content: space-between;
@@ -159,16 +166,16 @@
       padding: 9px 14px; border-bottom: 1px solid var(--line);
     }
     .lb-row:last-child { border: none; }
-    .lb-no { font-family: var(--head); font-size: 18px; width: 22px; text-align: center; color: var(--muted); flex-shrink: 0; }
+    .lb-no { font-family: 'Bebas Neue', sans-serif; font-size: 18px; width: 22px; text-align: center; color: var(--muted); flex-shrink: 0; }
     .lb-no.g1 { color: var(--gold); }
     .lb-no.g2 { color: #94a3b8; }
     .lb-no.g3 { color: #b45309; }
     .lb-av  { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
-    .lb-info { flex: 1; }
-    .lb-name { font-size: 13px; font-weight: 600; }
+    .lb-info { flex: 1; min-width: 0; }
+    .lb-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .lb-stat { font-size: 10px; color: var(--muted); margin-top: 1px; }
     .lb-prize { font-size: 10px; color: var(--green); margin-top: 1px; }
-    .lb-pt  { font-family: var(--head); font-size: 20px; color: var(--gold); flex-shrink: 0; }
+    .lb-pt  { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--gold); flex-shrink: 0; }
 
     /* MATCHES */
     .tabs { display: flex; border-bottom: 1px solid var(--line); overflow-x: auto; scrollbar-width: none; }
@@ -177,7 +184,7 @@
       padding: 10px 14px; font-size: 11px; font-weight: 600; color: var(--muted);
       cursor: pointer; white-space: nowrap; flex-shrink: 0;
       background: none; border: none; border-bottom: 2px solid transparent;
-      font-family: var(--body); transition: color .15s;
+      font-family: 'Sarabun', sans-serif; transition: color .15s;
     }
     .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
     .mcard { padding: 12px 14px; border-bottom: 1px solid var(--line); }
@@ -186,34 +193,36 @@
     .mrow  { display: grid; grid-template-columns: 1fr 60px 1fr; align-items: center; }
     .tcol  { text-align: center; }
     .tcol .fl { font-size: 20px; display: block; }
-    .tcol .nm { font-size: 11px; font-weight: 600; margin-top: 2px; line-height: 1.2; }
+    .tcol .nm { font-size: 11px; font-weight: 600; margin-top: 3px; line-height: 1.2; }
     .scol  { text-align: center; }
-    .snum  { font-family: var(--head); font-size: 24px; letter-spacing: 2px; line-height: 1; }
+    .snum  { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 2px; line-height: 1; }
     .svs   { font-size: 12px; color: var(--muted); }
     .live-dot {
       display: inline-block; width: 5px; height: 5px; background: var(--red);
       border-radius: 50%; margin-right: 3px; animation: blink 1s infinite;
     }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.15} }
+
     .ppanel { margin-top: 10px; }
     .pbts   { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; }
     .pbtn {
       padding: 7px 4px; border-radius: 6px; border: 1px solid var(--line);
-      background: var(--bg); color: var(--muted); font-family: var(--body);
-      font-size: 11px; font-weight: 600; cursor: pointer; text-align: center; line-height: 1.4;
+      background: var(--bg); color: var(--muted);
+      font-family: 'Sarabun', sans-serif; font-size: 11px; font-weight: 600;
+      cursor: pointer; text-align: center; line-height: 1.4;
     }
     .pbtn.sel { border-color: var(--blue); background: rgba(26,86,219,.12); color: var(--text); }
     .pscore { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
     .sinpn {
       flex: 1; background: var(--bg); border: 1px solid var(--line);
       border-radius: 6px; padding: 6px; color: var(--text);
-      font-size: 16px; text-align: center; font-family: var(--body); outline: none;
+      font-size: 16px; text-align: center; font-family: 'Sarabun', sans-serif; outline: none;
     }
     .sinpn:focus { border-color: var(--gold); }
     .ssep { color: var(--muted); }
     .psavebtn {
       padding: 6px 12px; background: var(--green); border: none;
-      border-radius: 6px; color: #fff; font-family: var(--body);
+      border-radius: 6px; color: #fff; font-family: 'Sarabun', sans-serif;
       font-size: 12px; font-weight: 700; cursor: pointer;
     }
     .pdone {
@@ -221,6 +230,8 @@
       background: rgba(6,199,85,.07); border: 1px solid rgba(6,199,85,.2);
       border-radius: 6px; font-size: 11px; color: var(--green);
     }
+
+    /* misc */
     .loading { text-align: center; padding: 28px 16px; color: var(--muted); font-size: 13px; }
     .spin {
       width: 26px; height: 26px; border-radius: 50%;
@@ -260,8 +271,8 @@
     <div class="rule-row"><span class="rule-pt">2</span><span class="rule-txt">pt — ทายสกอร์ถูกทั้งคู่</span></div>
     <div class="rule-row"><span class="rule-pt">5</span><span class="rule-txt">pt — ทายแชมป์ถูก (เลือกได้ 2 ทีม)</span></div>
   </div>
-  <div class="rule-box" style="text-align:center;">
-    <div class="rule-label" style="text-align:center;">เงินรางวัล 3 อันดับแรก</div>
+  <div class="rule-box" style="text-align:center">
+    <div class="rule-label" style="text-align:center">เงินรางวัล 3 อันดับแรก</div>
     <div class="prize-grid">
       <div><div class="prize-pct" style="color:var(--gold)">50%</div><div class="prize-lbl">อันดับ 1</div></div>
       <div><div class="prize-pct" style="color:#94a3b8">30%</div><div class="prize-lbl">อันดับ 2</div></div>
@@ -303,7 +314,9 @@
         <div class="slot" id="ps2"><span class="emp">— ทีมที่ 2 —</span></div>
       </div>
       <div class="swrap">
-        <input class="sinp" id="tsearch" type="text" placeholder="ค้นหาทีม..." autocomplete="off" oninput="filterTeams(this.value)" />
+        <input class="sinp" id="tsearch" type="text"
+          placeholder="พิมพ์ค้นหาทีม เช่น Argentina, Brazil..."
+          autocomplete="off" autocorrect="off" spellcheck="false" />
         <div class="tdd" id="tdd"></div>
       </div>
       <button class="bsave" id="bsave" onclick="saveChamp()">บันทึกทีมแชมป์</button>
@@ -312,8 +325,13 @@
 
   <!-- Leaderboard -->
   <div class="sec">
-    <button class="lb-tog" onclick="toggleLb()">ตารางคะแนน <span id="lbarr" style="color:var(--muted)">▼</span></button>
-    <div class="lb-body" id="lbb"><div class="loading"><div class="spin"></div>กำลังโหลด...</div></div>
+    <button class="lb-tog" onclick="toggleLb()">
+      ตารางคะแนน
+      <span id="lbarr" style="color:var(--muted)">▼</span>
+    </button>
+    <div class="lb-body" id="lbb">
+      <div class="loading"><div class="spin"></div>กำลังโหลด...</div>
+    </div>
   </div>
 
   <!-- Matches -->
@@ -332,7 +350,7 @@
 
 <script>
 // ══════════════════════════════════════════════════
-//  CONFIG — แก้เฉพาะ LID เป็น Channel ID ของคุณ
+//  CONFIG
 // ══════════════════════════════════════════════════
 const CFG = {
   GAS:   'https://script.google.com/macros/s/AKfycby6ggHrmpERG8cGGbhAxztc_N7GTo-XPWCQUWG8xVXwVKAO_kEJebaKG8E3A97IIXlP/exec',
@@ -341,26 +359,35 @@ const CFG = {
 };
 
 // ══════════════════════════════════════════════════
-//  TEAMS
+//  TEAMS — built-in 48 ทีม (ไม่ต้องรอ API)
 // ══════════════════════════════════════════════════
 const TEAMS = [
-  {n:'Argentina',f:'🇦🇷'},{n:'France',f:'🇫🇷'},{n:'Brazil',f:'🇧🇷'},
-  {n:'England',f:'🏴󠁧󠁢󠁥󠁮󠁧󠁿'},{n:'Spain',f:'🇪🇸'},{n:'Germany',f:'🇩🇪'},
-  {n:'Portugal',f:'🇵🇹'},{n:'Netherlands',f:'🇳🇱'},{n:'Belgium',f:'🇧🇪'},
-  {n:'Uruguay',f:'🇺🇾'},{n:'Croatia',f:'🇭🇷'},{n:'Morocco',f:'🇲🇦'},
-  {n:'USA',f:'🇺🇸'},{n:'Mexico',f:'🇲🇽'},{n:'Canada',f:'🇨🇦'},
-  {n:'Japan',f:'🇯🇵'},{n:'South Korea',f:'🇰🇷'},{n:'Australia',f:'🇦🇺'},
-  {n:'Senegal',f:'🇸🇳'},{n:'Nigeria',f:'🇳🇬'},{n:'Ghana',f:'🇬🇭'},
-  {n:'Ecuador',f:'🇪🇨'},{n:'Colombia',f:'🇨🇴'},{n:'Chile',f:'🇨🇱'},
-  {n:'Poland',f:'🇵🇱'},{n:'Switzerland',f:'🇨🇭'},{n:'Denmark',f:'🇩🇰'},
-  {n:'Serbia',f:'🇷🇸'},{n:'Turkey',f:'🇹🇷'},{n:'Iran',f:'🇮🇷'},
-  {n:'Saudi Arabia',f:'🇸🇦'},{n:'Qatar',f:'🇶🇦'},{n:'New Zealand',f:'🇳🇿'},
-  {n:'Panama',f:'🇵🇦'},{n:'Honduras',f:'🇭🇳'},{n:'Costa Rica',f:'🇨🇷'},
-  {n:'Jamaica',f:'🇯🇲'},{n:'DR Congo',f:'🇨🇩'},{n:'Cameroon',f:'🇨🇲'},
-  {n:'Tunisia',f:'🇹🇳'},{n:'Egypt',f:'🇪🇬'},{n:'Algeria',f:'🇩🇿'},
-  {n:'South Africa',f:'🇿🇦'},{n:'Ukraine',f:'🇺🇦'},{n:'Scotland',f:'🏴󠁧󠁢󠁳󠁣󠁴󠁿'},
-  {n:'Romania',f:'🇷🇴'},{n:'Austria',f:'🇦🇹'},{n:'Norway',f:'🇳🇴'},
-  {n:'Venezuela',f:'🇻🇪'},{n:'Paraguay',f:'🇵🇾'},{n:'Peru',f:'🇵🇪'},
+  {n:'Argentina',f:'🇦🇷',g:'B'},{n:'France',f:'🇫🇷',g:'E'},
+  {n:'Brazil',f:'🇧🇷',g:'H'},{n:'England',f:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',g:'G'},
+  {n:'Spain',f:'🇪🇸',g:'D'},{n:'Germany',f:'🇩🇪',g:'C'},
+  {n:'Portugal',f:'🇵🇹',g:'F'},{n:'Netherlands',f:'🇳🇱',g:'F'},
+  {n:'Belgium',f:'🇧🇪',g:'J'},{n:'Uruguay',f:'🇺🇾',g:'I'},
+  {n:'Croatia',f:'🇭🇷',g:'A'},{n:'Morocco',f:'🇲🇦',g:'K'},
+  {n:'USA',f:'🇺🇸',g:'A'},{n:'Mexico',f:'🇲🇽',g:'A'},
+  {n:'Canada',f:'🇨🇦',g:'B'},{n:'Japan',f:'🇯🇵',g:'C'},
+  {n:'South Korea',f:'🇰🇷',g:'D'},{n:'Australia',f:'🇦🇺',g:'H'},
+  {n:'Senegal',f:'🇸🇳',g:'K'},{n:'Nigeria',f:'🇳🇬',g:'L'},
+  {n:'Ghana',f:'🇬🇭',g:'J'},{n:'Ecuador',f:'🇪🇨',g:'E'},
+  {n:'Colombia',f:'🇨🇴',g:'G'},{n:'Chile',f:'🇨🇱',g:'I'},
+  {n:'Poland',f:'🇵🇱',g:'C'},{n:'Switzerland',f:'🇨🇭',g:'G'},
+  {n:'Denmark',f:'🇩🇰',g:'B'},{n:'Serbia',f:'🇷🇸',g:'E'},
+  {n:'Turkey',f:'🇹🇷',g:'F'},{n:'Iran',f:'🇮🇷',g:'D'},
+  {n:'Saudi Arabia',f:'🇸🇦',g:'H'},{n:'Qatar',f:'🇶🇦',g:'L'},
+  {n:'New Zealand',f:'🇳🇿',g:'I'},{n:'Panama',f:'🇵🇦',g:'K'},
+  {n:'Honduras',f:'🇭🇳',g:'J'},{n:'Costa Rica',f:'🇨🇷',g:'L'},
+  {n:'Jamaica',f:'🇯🇲',g:'B'},{n:'DR Congo',f:'🇨🇩',g:'C'},
+  {n:'Cameroon',f:'🇨🇲',g:'D'},{n:'Mali',f:'🇲🇱',g:'G'},
+  {n:'Tunisia',f:'🇹🇳',g:'I'},{n:'Egypt',f:'🇪🇬',g:'J'},
+  {n:'Algeria',f:'🇩🇿',g:'K'},{n:'South Africa',f:'🇿🇦',g:'A'},
+  {n:'Ukraine',f:'🇺🇦',g:'E'},{n:'Scotland',f:'🏴󠁧󠁢󠁳󠁣󠁴󠁿',g:'H'},
+  {n:'Romania',f:'🇷🇴',g:'F'},{n:'Norway',f:'🇳🇴',g:'L'},
+  {n:'Bosnia and Herzegovina',f:'🇧🇦',g:'C'},{n:'Czechia',f:'🇨🇿',g:''},
+  {n:'Sweden',f:'🇸🇪',g:'K'},{n:'Iraq',f:'🇮🇶',g:''},
 ];
 
 // ══════════════════════════════════════════════════
@@ -369,42 +396,35 @@ const TEAMS = [
 let S = { user:null, picks:[], preds:{}, matches:[], tab:'all' };
 
 // ══════════════════════════════════════════════════
-//  JSONP — แก้ CORS โดยใช้ script tag แทน fetch
+//  JSONP — แก้ CORS
 // ══════════════════════════════════════════════════
 function gasCall(action, data={}) {
   return new Promise((resolve, reject) => {
-    const cbName = 'cb_' + Date.now() + '_' + Math.random().toString(36).slice(2);
-    const timeout = setTimeout(() => {
-      delete window[cbName];
-      reject(new Error('Request timeout'));
-    }, 15000);
+    const cbName = 'gc_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+    const timer  = setTimeout(() => {
+      cleanup(cbName); reject(new Error('Timeout'));
+    }, 20000);
 
-    window[cbName] = (result) => {
-      clearTimeout(timeout);
-      delete window[cbName];
-      const el = document.getElementById(cbName);
-      if (el) el.remove();
-      if (result.ok) resolve(result);
-      else reject(new Error(result.message || 'Error'));
+    window[cbName] = (res) => {
+      clearTimeout(timer); cleanup(cbName);
+      if (res && res.ok) resolve(res);
+      else reject(new Error((res && res.message) || 'Error'));
     };
 
-    const params = new URLSearchParams({
-      action,
-      data: encodeURIComponent(JSON.stringify({ lineId: S.user?.lineId, ...data })),
-      callback: cbName,
-    });
-
-    const script = document.createElement('script');
-    script.id  = cbName;
-    script.src = `${CFG.GAS}?${params}`;
-    script.onerror = () => {
-      clearTimeout(timeout);
-      delete window[cbName];
-      script.remove();
-      reject(new Error('Network error'));
-    };
-    document.head.appendChild(script);
+    const payload = encodeURIComponent(JSON.stringify({ lineId: S.user?.lineId, ...data }));
+    const url = `${CFG.GAS}?action=${action}&data=${payload}&callback=${cbName}`;
+    const sc  = document.createElement('script');
+    sc.id = cbName + '_sc';
+    sc.src = url;
+    sc.onerror = () => { clearTimeout(timer); cleanup(cbName); reject(new Error('Network error')); };
+    document.head.appendChild(sc);
   });
+}
+
+function cleanup(cbName) {
+  delete window[cbName];
+  const el = document.getElementById(cbName + '_sc');
+  if (el) el.remove();
 }
 
 // ══════════════════════════════════════════════════
@@ -413,21 +433,20 @@ function gasCall(action, data={}) {
 window.addEventListener('load', async () => {
   const p = new URLSearchParams(location.search);
   if (p.get('code')) {
-    showLoading('กำลังเข้าสู่ระบบ...');
+    showScreen('loading');
+    document.getElementById('loading-msg').textContent = 'กำลังเข้าสู่ระบบ...';
     await handleCallback(p.get('code'), p.get('state'));
     return;
   }
   const stored = localStorage.getItem('wc26u');
-  if (stored) {
-    S.user = JSON.parse(stored);
-    await boot();
-  }
+  if (stored) { S.user = JSON.parse(stored); await boot(); }
+  else showScreen('login');
 });
 
-function showLoading(msg) {
-  document.getElementById('login-screen').style.display   = 'none';
-  document.getElementById('loading-screen').style.display = 'flex';
-  document.getElementById('loading-msg').textContent = msg;
+function showScreen(name) {
+  document.getElementById('login-screen').style.display   = name==='login'   ? 'flex' : 'none';
+  document.getElementById('loading-screen').style.display = name==='loading' ? 'flex' : 'none';
+  document.getElementById('main-app').style.display       = name==='main'    ? 'block': 'none';
 }
 
 // ══════════════════════════════════════════════════
@@ -437,32 +456,27 @@ function loginWithLine() {
   const ns = Math.random().toString(36).slice(2);
   sessionStorage.setItem('ls', ns);
   const u = new URL('https://access.line.me/oauth2/v2.1/authorize');
-  u.searchParams.set('response_type', 'code');
-  u.searchParams.set('client_id',     CFG.LID);
-  u.searchParams.set('redirect_uri',  CFG.REDIR);
-  u.searchParams.set('state',         ns);
-  u.searchParams.set('scope',         'profile openid');
+  u.searchParams.set('response_type','code');
+  u.searchParams.set('client_id', CFG.LID);
+  u.searchParams.set('redirect_uri', CFG.REDIR);
+  u.searchParams.set('state', ns);
+  u.searchParams.set('scope','profile openid');
   location.href = u.toString();
 }
 
 async function handleCallback(code, st) {
   if (st !== sessionStorage.getItem('ls')) {
-    toast('State error — ลองใหม่', 'err');
-    document.getElementById('loading-screen').style.display = 'none';
-    document.getElementById('login-screen').style.display   = 'flex';
-    return;
+    toast('เกิดข้อผิดพลาด ลองใหม่','err');
+    showScreen('login'); return;
   }
   try {
-    // สำหรับ lineLogin ใช้ JSONP ผ่าน GAS GET
-    // ส่ง code ไปให้ GAS exchange เอง
     const r = await gasCall('lineLogin', { code, redirectUri: CFG.REDIR });
     S.user = r.user;
     localStorage.setItem('wc26u', JSON.stringify(S.user));
     history.replaceState({}, '', location.pathname);
     await boot();
   } catch(e) {
-    document.getElementById('loading-screen').style.display = 'none';
-    document.getElementById('login-screen').style.display   = 'flex';
+    showScreen('login');
     toast('Login ไม่สำเร็จ: ' + e.message, 'err');
   }
 }
@@ -471,12 +485,11 @@ async function handleCallback(code, st) {
 //  BOOT
 // ══════════════════════════════════════════════════
 async function boot() {
-  document.getElementById('loading-screen').style.display = 'none';
-  document.getElementById('login-screen').style.display   = 'none';
-  document.getElementById('main-app').style.display       = 'block';
+  showScreen('main');
   document.getElementById('ua').src = S.user.picture || '';
   document.getElementById('un').textContent = S.user.name;
   document.getElementById('upt').innerHTML  = (S.user.points||0) + ' <small>pt</small>';
+  initTeamSearch(); // setup dropdown ทันที ไม่ต้องรอ
   await Promise.all([loadUser(), loadMatches()]);
 }
 
@@ -504,41 +517,74 @@ async function loadMatches() {
     renderMatches();
   } catch(e) {
     document.getElementById('ml').innerHTML =
-      '<div class="loading" style="color:var(--red)">โหลดแมตช์ไม่ได้</div>';
+      '<div class="loading" style="color:var(--red)">โหลดแมตช์ไม่ได้ ลองใหม่</div>';
   }
 }
 
 // ══════════════════════════════════════════════════
-//  CHAMPION PICKS
+//  TEAM SEARCH DROPDOWN (แก้ปัญหา dropdown ไม่แสดง)
 // ══════════════════════════════════════════════════
-function renderPicks() {
-  [0,1].forEach(i => {
-    const el = document.getElementById(`ps${i+1}`), pk = S.picks[i];
-    if (pk) {
-      el.className = 'slot filled';
-      el.innerHTML = `<span class="fl">${pk.flag||pk.f||''}</span><span class="nm">${pk.name||pk.n}</span><span class="rm" onclick="rmPick(${i})">ลบออก</span>`;
-    } else {
-      el.className = 'slot';
-      el.innerHTML = `<span class="emp">— ทีมที่ ${i+1} —</span>`;
-    }
-  });
-}
+function initTeamSearch() {
+  const input = document.getElementById('tsearch');
+  const dd    = document.getElementById('tdd');
 
-function filterTeams(q) {
-  const dd = document.getElementById('tdd');
-  if (!q.trim()) { dd.classList.remove('open'); return; }
-  const f = TEAMS.filter(t => t.n.toLowerCase().includes(q.toLowerCase())).slice(0,8);
-  if (!f.length) { dd.classList.remove('open'); return; }
-  dd.innerHTML = f.map(t => `<div class="topt" onclick="pickTeam('${t.n}','${t.f}')">${t.f} ${t.n}</div>`).join('');
-  dd.classList.add('open');
+  // ใช้ addEventListener แทน oninput inline
+  input.addEventListener('input', function() {
+    const q = this.value.trim().toLowerCase();
+    if (!q) { dd.classList.remove('open'); dd.innerHTML=''; return; }
+
+    const filtered = TEAMS.filter(t =>
+      t.n.toLowerCase().includes(q) ||
+      (t.g && t.g.toLowerCase().includes(q))
+    ).slice(0, 10);
+
+    if (!filtered.length) { dd.classList.remove('open'); return; }
+
+    dd.innerHTML = filtered.map(t => `
+      <div class="topt" data-name="${t.n}" data-flag="${t.f}">
+        <span class="tfl">${t.f}</span>
+        <span class="tnm">${t.n}</span>
+        ${t.g ? `<span class="tgp">กลุ่ม ${t.g}</span>` : ''}
+      </div>
+    `).join('');
+
+    // click handler แต่ละ option
+    dd.querySelectorAll('.topt').forEach(el => {
+      el.addEventListener('click', function() {
+        pickTeam(this.dataset.name, this.dataset.flag);
+      });
+    });
+
+    dd.classList.add('open');
+  });
+
+  // focus → แสดง dropdown ถ้ามีข้อความ
+  input.addEventListener('focus', function() {
+    if (this.value.trim()) this.dispatchEvent(new Event('input'));
+  });
 }
 
 function pickTeam(n, f) {
   if (S.picks.find(p => (p.name||p.n) === n)) { toast('เลือกทีมนี้แล้ว','err'); return; }
   if (S.picks.length >= 2) { toast('เลือกได้แค่ 2 ทีม','err'); return; }
-  S.picks.push({name:n, flag:f}); renderPicks();
+  S.picks.push({name:n, flag:f});
+  renderPicks();
   document.getElementById('tsearch').value = '';
   document.getElementById('tdd').classList.remove('open');
+  document.getElementById('tdd').innerHTML = '';
+}
+
+function renderPicks() {
+  [0,1].forEach(i => {
+    const el = document.getElementById(`ps${i+1}`), pk = S.picks[i];
+    if (pk) {
+      el.className = 'slot filled';
+      el.innerHTML = `<span class="fl">${pk.flag||pk.f||''}</span><span class="nm">${pk.name||pk.n}</span><span class="rm" onclick="rmPick(${i})">✕ ลบออก</span>`;
+    } else {
+      el.className = 'slot';
+      el.innerHTML = `<span class="emp">— ทีมที่ ${i+1} —</span>`;
+    }
+  });
 }
 
 function rmPick(i) { S.picks.splice(i,1); renderPicks(); }
@@ -548,7 +594,7 @@ async function saveChamp() {
   b.disabled = true; b.textContent = 'กำลังบันทึก...';
   try {
     await gasCall('saveChampionPicks', { picks: S.picks });
-    toast('บันทึกแล้ว','ok');
+    toast('บันทึกทีมแชมป์แล้ว','ok');
   } catch(e) { toast(e.message,'err'); }
   finally { b.disabled = false; b.textContent = 'บันทึกทีมแชมป์'; }
 }
@@ -568,7 +614,7 @@ async function loadLb() {
   try {
     const r  = await gasCall('getLeaderboard');
     const lb = r.leaderboard || [];
-    if (!lb.length) { document.getElementById('lbb').innerHTML = '<div class="loading">ยังไม่มีข้อมูล</div>'; return; }
+    if (!lb.length) { document.getElementById('lbb').innerHTML='<div class="loading">ยังไม่มีข้อมูล</div>'; return; }
     const pot = lb.length * 200, prizes = [.5,.3,.15], gc = ['g1','g2','g3'];
     document.getElementById('lbb').innerHTML = lb.map((u,i) => `
       <div class="lb-row">
@@ -582,7 +628,7 @@ async function loadLb() {
         <div class="lb-pt">${u.points}</div>
       </div>`).join('');
   } catch(e) {
-    document.getElementById('lbb').innerHTML = '<div class="loading" style="color:var(--red)">โหลดไม่ได้</div>';
+    document.getElementById('lbb').innerHTML='<div class="loading" style="color:var(--red)">โหลดไม่ได้</div>';
   }
 }
 
@@ -597,22 +643,22 @@ function setTab(t, el) {
 
 function renderMatches() {
   const ml = document.getElementById('ml');
-  const ms = S.tab === 'all' ? S.matches : S.matches.filter(m => m.status === S.tab);
-  if (!ms.length) { ml.innerHTML = '<div class="loading">ไม่มีแมตช์ในหมวดนี้</div>'; return; }
+  const ms = S.tab==='all' ? S.matches : S.matches.filter(m => m.status===S.tab);
+  if (!ms.length) { ml.innerHTML='<div class="loading">ไม่มีแมตช์ในหมวดนี้</div>'; return; }
   ml.innerHTML = ms.map(m => mcard(m)).join('');
 }
 
 function sid(id) { return String(id).replace(/[^a-z0-9_-]/gi,'_'); }
 
 function mcard(m) {
-  const pr   = S.preds[m.id] || {}, safe = sid(m.id);
-  const live = m.status === 'live', done = m.status === 'finished', can = m.status === 'upcoming';
-  const scoreEl = (live||done)
+  const pr   = S.preds[m.id]||{}, safe=sid(m.id);
+  const live = m.status==='live', done=m.status==='finished', can=m.status==='upcoming';
+  const sc   = (live||done)
     ? `<div class="snum">${m.homeScore??'-'}-${m.awayScore??'-'}</div>${live?'<div style="font-size:10px;color:var(--red);margin-top:2px"><span class="live-dot"></span>LIVE</div>':''}`
     : `<div class="svs">VS</div>`;
-  const pdone = pr.result
+  const pd   = pr.result
     ? `<div class="pdone">ทายไว้: ${pr.result==='home'?m.homeName+' ชนะ':pr.result==='away'?m.awayName+' ชนะ':'เสมอ'}${pr.homeScore!==undefined?' · '+pr.homeScore+'-'+pr.awayScore:''}</div>` : '';
-  const ppanel = can ? `
+  const pp   = can ? `
     <div class="ppanel">
       <div class="pbts">
         <button class="pbtn ${pr.result==='home'?'sel':''}" onclick="setRes('${m.id}','home')">${m.homeName}<br/>ชนะ</button>
@@ -628,35 +674,38 @@ function mcard(m) {
     </div>` : '';
   return `
     <div class="mcard" id="mc-${safe}">
-      <div class="minfo"><span>${m.group?'กลุ่ม '+m.group+' · ':''}${m.round||''}</span><span>${m.dateText||''}</span></div>
+      <div class="minfo">
+        <span>${m.group?'กลุ่ม '+m.group+' · ':''}${m.round||''}</span>
+        <span>${m.dateText||''}</span>
+      </div>
       <div class="mrow">
         <div class="tcol"><span class="fl">${m.homeFlag||'🏳️'}</span><div class="nm">${m.homeName}</div></div>
-        <div class="scol">${scoreEl}</div>
+        <div class="scol">${sc}</div>
         <div class="tcol"><span class="fl">${m.awayFlag||'🏳️'}</span><div class="nm">${m.awayName}</div></div>
       </div>
-      ${pdone}${ppanel}
+      ${pd}${pp}
     </div>`;
 }
 
 function setRes(matchId, res) {
-  if (!S.preds[matchId]) S.preds[matchId] = {};
+  if (!S.preds[matchId]) S.preds[matchId]={};
   S.preds[matchId].result = res;
-  const m = S.matches.find(x => x.id === matchId);
-  if (m) { const el = document.getElementById('mc-'+sid(matchId)); if(el) el.outerHTML = mcard(m); }
+  const m = S.matches.find(x => x.id===matchId);
+  if (m) { const el=document.getElementById('mc-'+sid(matchId)); if(el) el.outerHTML=mcard(m); }
 }
 
 async function savePred(matchId) {
-  const safe = sid(matchId);
-  const hs = document.getElementById('hs-'+safe)?.value;
-  const as = document.getElementById('as-'+safe)?.value;
-  const res = S.preds[matchId]?.result;
+  const safe=sid(matchId);
+  const hs=document.getElementById('hs-'+safe)?.value;
+  const as=document.getElementById('as-'+safe)?.value;
+  const res=S.preds[matchId]?.result;
   if (!res) { toast('เลือกผลก่อน','err'); return; }
-  S.preds[matchId] = { result:res, homeScore:hs!==''?parseInt(hs):undefined, awayScore:as!==''?parseInt(as):undefined };
+  S.preds[matchId]={ result:res, homeScore:hs!==''?parseInt(hs):undefined, awayScore:as!==''?parseInt(as):undefined };
   try {
-    await gasCall('savePrediction', { matchId, prediction: S.preds[matchId] });
+    await gasCall('savePrediction',{ matchId, prediction:S.preds[matchId] });
     toast('บันทึกแล้ว','ok');
-    const m = S.matches.find(x => x.id === matchId);
-    if (m) { const el = document.getElementById('mc-'+safe); if(el) el.outerHTML = mcard(m); }
+    const m=S.matches.find(x=>x.id===matchId);
+    if(m){ const el=document.getElementById('mc-'+safe); if(el) el.outerHTML=mcard(m); }
   } catch(e) { toast(e.message,'err'); }
 }
 
@@ -664,13 +713,16 @@ async function savePred(matchId) {
 //  TOAST
 // ══════════════════════════════════════════════════
 function toast(msg, type='') {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.className = 'toast show ' + type;
-  setTimeout(() => t.className = 'toast', 2500);
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast show '+type;
+  setTimeout(()=>t.className='toast', 2500);
 }
 
+// ปิด dropdown เมื่อคลิกนอก
 document.addEventListener('click', e => {
-  if (!e.target.closest('.swrap')) document.getElementById('tdd').classList.remove('open');
+  if (!e.target.closest('.swrap')) {
+    document.getElementById('tdd').classList.remove('open');
+  }
 });
 </script>
 </body>
