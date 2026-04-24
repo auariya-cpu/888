@@ -279,6 +279,9 @@
     .scol  { text-align: center; }
     .snum  { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 2px; line-height: 1; }
     .svs   { font-size: 12px; color: var(--muted); }
+    .score-label { font-size: 9px; color: var(--muted); margin-top: 1px; letter-spacing: .5px; }
+    .score-ft    { font-size: 10px; color: var(--muted); margin-top: 2px; }
+    .ppanel-label { font-size: 10px; color: var(--muted); letter-spacing: .3px; margin-bottom: 5px; }
     .live-dot {
       display: inline-block; width: 5px; height: 5px; background: var(--red);
       border-radius: 50%; margin-right: 3px; animation: blink 1s infinite;
@@ -361,14 +364,14 @@
         <div class="m-pts">1</div>
         <div class="m-rule-info">
           <div class="m-rule-name">ทายผลถูก</div>
-          <div class="m-rule-desc">ทายผลแต่ละคู่ว่าใครชนะ แพ้ หรือเสมอ<br/>ทายถูก +1 pt</div>
+          <div class="m-rule-desc">ทายว่าใครชนะ แพ้ หรือเสมอ ภายใน 90 นาที<br/>ทายถูก +1 pt</div>
         </div>
       </div>
       <div class="m-rule-row">
         <div class="m-pts">2</div>
         <div class="m-rule-info">
           <div class="m-rule-name">ทายสกอร์ถูก</div>
-          <div class="m-rule-desc">ทายสกอร์ถูกทั้งสองฝั่ง เช่น 2-1 หรือ 0-0<br/>ถ้าถูกสกอร์ จะได้ 2 pt แทน 1 pt</div>
+          <div class="m-rule-desc">ทายสกอร์ครบ <strong style="color:var(--text)">90 นาที เท่านั้น</strong> ไม่รวมต่อเวลาและจุดโทษ<br/>ทายถูกทั้งสองฝั่ง +2 pt<br/><span style="color:var(--gold)">ทายผลและทายสกอร์เป็นอิสระต่อกัน</span> เช่น ทายผลว่า A ชนะ แต่ทายสกอร์ว่า B นำก็ได้ ไม่ผิดกติกา</div>
         </div>
       </div>
       <div class="m-rule-row">
@@ -871,18 +874,41 @@ function sid(id) { return String(id).replace(/[^a-z0-9_-]/gi,'_'); }
 function mcard(m) {
   const pr   = S.preds[m.id]||{}, safe=sid(m.id);
   const live = m.status==='live', done=m.status==='finished', can=m.status==='upcoming';
-  const sc   = (live||done)
-    ? `<div class="snum">${m.homeScore??'-'}-${m.awayScore??'-'}</div>${live?'<div style="font-size:10px;color:var(--red);margin-top:2px"><span class="live-dot"></span>LIVE</div>':''}`
-    : `<div class="svs">VS</div>`;
-  const pd   = pr.result
-    ? `<div class="pdone">ทายไว้: ${pr.result==='home'?m.homeName+' ชนะ':pr.result==='away'?m.awayName+' ชนะ':'เสมอ'}${(pr.homeScore!==undefined && pr.awayScore!==undefined) ? ' · '+(pr.homeScore??0)+'-'+(pr.awayScore??0) : ''}</div>` : '';
-  const pp   = can ? `
+
+  // สกอร์จริง — แสดงทั้ง 90 นาที และ FT (รวมต่อเวลา) ถ้ามี
+  let scoreEl = '';
+  if (live || done) {
+    const reg = (m.homeScoreReg!==null && m.homeScoreReg!==undefined)
+      ? `<div class="snum">${m.homeScoreReg}-${m.awayScoreReg}</div><div class="score-label">90 นาที</div>`
+      : `<div class="snum">${m.homeScore??'-'}-${m.awayScore??'-'}</div>`;
+    const ft  = (m.homeScore!==null && m.homeScore!==undefined &&
+                 m.homeScore !== m.homeScoreReg)
+      ? `<div class="score-ft">FT ${m.homeScore}-${m.awayScore}</div>` : '';
+    const liveTag = live ? '<div style="font-size:10px;color:var(--red);margin-top:2px"><span class="live-dot"></span>LIVE</div>' : '';
+    scoreEl = reg + ft + liveTag;
+  } else {
+    scoreEl = `<div class="svs">VS</div>`;
+  }
+
+  // ทายที่บันทึกไว้
+  const predResultTxt = pr.result === 'home' ? m.homeName+' ชนะ'
+                      : pr.result === 'away' ? m.awayName+' ชนะ'
+                      : pr.result === 'draw' ? 'เสมอ' : '';
+  const predScoreTxt  = (pr.homeScore!==undefined && pr.awayScore!==undefined)
+    ? ` · สกอร์ ${pr.homeScore}-${pr.awayScore}` : '';
+  const pd = pr.result
+    ? `<div class="pdone">${predResultTxt}${predScoreTxt}</div>` : '';
+
+  // panel ทาย — ผล และ สกอร์ แยกอิสระจากกัน
+  const pp = can ? `
     <div class="ppanel">
+      <div class="ppanel-label">ทายผล (ชนะ/เสมอ/แพ้)</div>
       <div class="pbts">
         <button class="pbtn ${pr.result==='home'?'sel':''}" onclick="setRes('${m.id}','home')">${m.homeName}<br/>ชนะ</button>
         <button class="pbtn ${pr.result==='draw'?'sel':''}" onclick="setRes('${m.id}','draw')">เสมอ</button>
         <button class="pbtn ${pr.result==='away'?'sel':''}" onclick="setRes('${m.id}','away')">${m.awayName}<br/>ชนะ</button>
       </div>
+      <div class="ppanel-label" style="margin-top:8px">ทายสกอร์ 90 นาที <span style="color:var(--muted);font-weight:400">(ไม่รวมต่อเวลา/จุดโทษ)</span></div>
       <div class="pscore">
         <input class="sinpn" type="number" min="0" max="20" placeholder="0" id="hs-${safe}" value="${pr.homeScore??''}" />
         <span class="ssep">—</span>
@@ -906,7 +932,7 @@ function mcard(m) {
       </div>
       <div class="mrow">
         <div class="tcol"><span class="fl">${m.homeFlag||'🏳️'}</span><div class="nm">${m.homeName}</div></div>
-        <div class="scol">${sc}</div>
+        <div class="scol">${scoreEl}</div>
         <div class="tcol"><span class="fl">${m.awayFlag||'🏳️'}</span><div class="nm">${m.awayName}</div></div>
       </div>
       ${pd}${pp}
