@@ -174,7 +174,16 @@
     .lb-info { flex: 1; min-width: 0; }
     .lb-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .lb-stat { font-size: 10px; color: var(--muted); margin-top: 1px; }
-    .lb-prize { font-size: 10px; color: var(--green); margin-top: 1px; }
+    .lb-acc  { margin-top: 5px; }
+    .lb-acc-row { display: flex; align-items: center; gap: 6px; margin-top: 2px; }
+    .lb-acc-bar { flex: 1; height: 3px; background: var(--line); border-radius: 2px; overflow: hidden; }
+    .lb-acc-fill { height: 100%; border-radius: 2px; transition: width .4s; }
+    .lb-acc-fill.result { background: var(--blue); }
+    .lb-acc-fill.score  { background: var(--gold); }
+    .lb-acc-lbl { font-size: 9px; color: var(--muted); width: 28px; flex-shrink: 0; }
+    .lb-acc-pct { font-size: 9px; width: 28px; text-align: right; flex-shrink: 0; }
+    .lb-acc-pct.result { color: var(--blue); }
+    .lb-acc-pct.score  { color: var(--gold); }
     .lb-pt  { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--gold); flex-shrink: 0; }
 
     /* MATCHES */
@@ -326,7 +335,7 @@
   <!-- Leaderboard -->
   <div class="sec">
     <button class="lb-tog" onclick="toggleLb()">
-      ตารางคะแนน
+      ตารางสถิติ
       <span id="lbarr" style="color:var(--muted)">▼</span>
     </button>
     <div class="lb-body" id="lbb">
@@ -614,19 +623,46 @@ async function loadLb() {
   try {
     const r  = await gasCall('getLeaderboard');
     const lb = r.leaderboard || [];
-    if (!lb.length) { document.getElementById('lbb').innerHTML='<div class="loading">ยังไม่มีข้อมูล</div>'; return; }
-    const pot = lb.length * 200, prizes = [.5,.3,.15], gc = ['g1','g2','g3'];
-    document.getElementById('lbb').innerHTML = lb.map((u,i) => `
+    if (!lb.length) {
+      document.getElementById('lbb').innerHTML='<div class="loading">ยังไม่มีข้อมูล</div>';
+      return;
+    }
+    const gc = ['g1','g2','g3'];
+
+    // หา max ทายผล+สกอร์รวม เพื่อคำนวณ % ความแม่น
+    const totalMatches = S.matches.filter(m => m.status === 'finished').length || 1;
+
+    document.getElementById('lbb').innerHTML = lb.map((u, i) => {
+      const cr = u.correctResults || 0;   // ทายผลถูก
+      const cs = u.correctScores  || 0;   // ทายสกอร์ถูก
+      const total = cr + cs;
+      // % ความแม่นผล = correctResults / totalFinishedMatches
+      const pctResult = totalMatches > 0 ? Math.round(cr / totalMatches * 100) : 0;
+      const pctScore  = totalMatches > 0 ? Math.round(cs / totalMatches * 100) : 0;
+
+      return `
       <div class="lb-row">
         <div class="lb-no ${gc[i]||''}">${i+1}</div>
         <img class="lb-av" src="${u.picture||''}" onerror="this.style.display='none'" />
         <div class="lb-info">
           <div class="lb-name">${u.name}</div>
-          <div class="lb-stat">ผล ${u.correctResults||0} · สกอร์ ${u.correctScores||0}</div>
-          ${i<3?`<div class="lb-prize">รางวัล ${Math.floor(pot*prizes[i]).toLocaleString()} บ.</div>`:''}
+          <div class="lb-stat">${u.points} pt · ทายถูกรวม ${total} ครั้ง</div>
+          <div class="lb-acc">
+            <div class="lb-acc-row">
+              <span class="lb-acc-lbl">ผล</span>
+              <div class="lb-acc-bar"><div class="lb-acc-fill result" style="width:${pctResult}%"></div></div>
+              <span class="lb-acc-pct result">${cr}/${totalMatches}</span>
+            </div>
+            <div class="lb-acc-row">
+              <span class="lb-acc-lbl">สกอร์</span>
+              <div class="lb-acc-bar"><div class="lb-acc-fill score" style="width:${pctScore}%"></div></div>
+              <span class="lb-acc-pct score">${cs}/${totalMatches}</span>
+            </div>
+          </div>
         </div>
         <div class="lb-pt">${u.points}</div>
-      </div>`).join('');
+      </div>`;
+    }).join('');
   } catch(e) {
     document.getElementById('lbb').innerHTML='<div class="loading" style="color:var(--red)">โหลดไม่ได้</div>';
   }
