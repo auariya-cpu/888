@@ -309,7 +309,9 @@
 <!-- MAIN -->
 <div id="main-app">
   <div class="profile">
-    <img id="ua" src="" alt="" onerror="this.style.visibility='hidden'" />
+    <img id="ua" src="" alt=""
+      style="background:var(--line);"
+      onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 48 48%22%3E%3Crect width=%2248%22 height=%2248%22 rx=%2224%22 fill=%22%231e2130%22/%3E%3Ctext y=%2232%22 x=%2224%22 text-anchor=%22middle%22 font-size=%2224%22%3E👤%3C/text%3E%3C/svg%3E'" />
     <div>
       <div class="pname" id="un">-</div>
       <div class="ppts" id="upt">0 <small>pt</small></div>
@@ -500,9 +502,15 @@ async function handleCallback(code, st) {
 // ══════════════════════════════════════════════════
 async function boot() {
   showScreen('main');
-  document.getElementById('ua').src = S.user.picture || '';
+  // ตั้งชื่อก่อน รูปค่อย load ทีหลัง
   document.getElementById('un').textContent = S.user.name;
   document.getElementById('upt').innerHTML  = (S.user.points||0) + ' <small>pt</small>';
+  // set รูป — LINE profile picture ต้องใช้ referrerPolicy
+  const img = document.getElementById('ua');
+  if (S.user.picture) {
+    img.referrerPolicy = 'no-referrer';
+    img.src = S.user.picture;
+  }
   initTeamSearch();
   await Promise.all([loadUser(), loadMatches(), loadPlayerCount()]);
 }
@@ -518,10 +526,15 @@ async function loadPlayerCount() {
 async function loadUser() {
   try {
     const r = await gasCall('getUserData');
-    S.user.points = r.points;
+    S.user.points  = r.points;
     S.picks = r.championPicks || [];
     S.preds = r.predictions   || {};
     document.getElementById('upt').innerHTML = r.points + ' <small>pt</small>';
+    // อัพเดทรูปอีกครั้งหลัง getUserData เพราะ lineLogin อาจได้ picture URL ไม่ครบ
+    if (S.user.picture) {
+      const img = document.getElementById('ua');
+      img.src = S.user.picture;
+    }
     renderPicks();
     if (r.championDeadline) {
       const d = new Date(r.championDeadline);
