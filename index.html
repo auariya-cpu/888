@@ -3,997 +3,608 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>⚽ ทายผล World Cup 2026</title>
+  <title>World Cup 2026 — ทายผล</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&family=Bebas+Neue&display=swap" rel="stylesheet" />
   <style>
-    /* ──────────────── CSS Variables ──────────────── */
     :root {
-      --bg: #0a0e1a;
-      --surface: #111827;
-      --surface2: #1c2333;
-      --border: #2a3550;
-      --accent: #3b82f6;
-      --accent2: #f59e0b;
-      --green: #22c55e;
-      --red: #ef4444;
-      --text: #f1f5f9;
-      --muted: #94a3b8;
-      --radius: 14px;
-      --font-body: 'Sarabun', sans-serif;
-      --font-display: 'Bebas Neue', sans-serif;
+      --bg:      #08090d;
+      --card:    #0f1117;
+      --line:    #1e2130;
+      --gold:    #c9a84c;
+      --blue:    #1a56db;
+      --green:   #06c755;
+      --red:     #e03131;
+      --text:    #eaeaea;
+      --muted:   #6b7280;
+      --r:       10px;
+      --body:    'Sarabun', sans-serif;
+      --head:    'Bebas Neue', sans-serif;
     }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body {
-      font-family: var(--font-body);
+      font-family: var(--body);
       background: var(--bg);
       color: var(--text);
-      min-height: 100vh;
-      max-width: 480px;
+      max-width: 430px;
       margin: 0 auto;
-      padding-bottom: 40px;
+      min-height: 100vh;
+      padding-bottom: 48px;
     }
 
-    /* ──────────────── Header ──────────────── */
-    .app-header {
-      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
-      padding: 16px 20px 14px;
-      text-align: center;
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 100;
+    /* HEADER */
+    header {
+      padding: 14px 20px 12px;
+      background: var(--card);
+      border-bottom: 1px solid var(--line);
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 90;
     }
-    .app-header h1 {
-      font-family: var(--font-display);
-      font-size: 26px;
-      letter-spacing: 2px;
-      color: var(--accent2);
-      line-height: 1;
-    }
-    .app-header p {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 2px;
-    }
+    .logo { font-family: var(--head); font-size: 22px; letter-spacing: 3px; color: var(--gold); }
+    .sub  { font-size: 10px; color: var(--muted); margin-top: 1px; letter-spacing: 1px; }
+    .n26  { font-family: var(--head); font-size: 34px; color: var(--line); letter-spacing: -1px; }
 
-    /* ──────────────── Login Screen ──────────────── */
+    /* LOGIN */
     #login-screen {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 80vh;
-      padding: 24px;
-      gap: 24px;
-      text-align: center;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; min-height: 85vh;
+      padding: 32px 20px; gap: 16px; text-align: center;
     }
-    .login-icon { font-size: 64px; }
-    .login-title {
-      font-family: var(--font-display);
-      font-size: 32px;
-      letter-spacing: 2px;
-      color: var(--accent2);
+    .login-year { font-family: var(--head); font-size: 72px; color: var(--gold); line-height: 1; letter-spacing: -2px; }
+    .login-title { font-family: var(--head); font-size: 26px; letter-spacing: 2px; }
+    .rule-box {
+      width: 100%; background: var(--card);
+      border: 1px solid var(--line); border-radius: var(--r); padding: 16px;
     }
-    .login-desc { color: var(--muted); font-size: 15px; line-height: 1.6; }
+    .rule-label { font-size: 10px; color: var(--muted); letter-spacing: 1.5px; margin-bottom: 10px; text-align: left; }
+    .rule-row { display: flex; align-items: baseline; gap: 10px; padding: 3px 0; }
+    .rule-pt { font-family: var(--head); font-size: 20px; color: var(--gold); width: 24px; }
+    .rule-txt { font-size: 13px; color: var(--muted); }
+    .prize-grid {
+      display: grid; grid-template-columns: repeat(4,1fr);
+      gap: 2px; margin-top: 8px;
+    }
+    .prize-pct { font-family: var(--head); font-size: 22px; }
+    .prize-lbl { font-size: 11px; color: var(--muted); margin-top: 2px; }
     .btn-line {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: #06c755;
-      color: #fff;
-      border: none;
-      border-radius: 50px;
-      padding: 14px 32px;
-      font-family: var(--font-body);
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform .15s, box-shadow .15s;
-      box-shadow: 0 4px 16px rgba(6,199,85,.35);
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      width: 100%; background: var(--green); color: #fff;
+      border: none; border-radius: 8px; padding: 14px;
+      font-family: var(--body); font-size: 15px; font-weight: 700; cursor: pointer;
     }
-    .btn-line:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(6,199,85,.45); }
-    .btn-line svg { width: 24px; height: 24px; }
+    .btn-line:active { opacity: .85; }
+    .btn-line svg { width: 20px; height: 20px; }
 
-    /* ──────────────── Main App ──────────────── */
+    /* MAIN */
     #main-app { display: none; }
 
-    /* ──────────────── Profile Card ──────────────── */
-    .profile-card {
-      background: var(--surface);
-      margin: 16px;
-      border-radius: var(--radius);
-      padding: 18px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      border: 1px solid var(--border);
+    /* PROFILE */
+    .profile {
+      padding: 14px 18px; display: flex; align-items: center; gap: 12px;
+      border-bottom: 1px solid var(--line);
     }
-    .profile-avatar {
-      width: 56px; height: 56px;
-      border-radius: 50%;
-      border: 2px solid var(--accent);
-      object-fit: cover;
-      flex-shrink: 0;
+    .profile img {
+      width: 46px; height: 46px; border-radius: 50%;
+      object-fit: cover; border: 1.5px solid var(--gold); flex-shrink: 0;
     }
-    .profile-info { flex: 1; }
-    .profile-name { font-weight: 700; font-size: 17px; }
-    .profile-points {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 4px;
-      font-size: 14px;
-      color: var(--accent2);
-    }
-    .points-badge {
-      background: rgba(245,158,11,.15);
-      border: 1px solid var(--accent2);
-      border-radius: 20px;
-      padding: 2px 10px;
-      font-weight: 700;
-      font-size: 15px;
-    }
+    .pname { font-weight: 700; font-size: 15px; }
+    .ppts  { font-family: var(--head); font-size: 18px; color: var(--gold); letter-spacing: 1px; }
+    .ppts small { font-family: var(--body); font-size: 12px; color: var(--muted); }
 
-    /* ──────────────── Section Wrapper ──────────────── */
-    .section {
-      margin: 0 16px 16px;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      background: var(--surface);
-      overflow: hidden;
+    /* SECTION */
+    .sec {
+      margin: 10px 12px;
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: var(--r); overflow: hidden;
     }
-    .section-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 14px 16px;
-      background: var(--surface2);
-      border-bottom: 1px solid var(--border);
-      font-weight: 700;
-      font-size: 15px;
+    .sec-hd {
+      padding: 11px 14px; border-bottom: 1px solid var(--line);
+      font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+      color: var(--muted); text-transform: uppercase;
+      display: flex; align-items: center; justify-content: space-between;
     }
-    .section-header .icon { font-size: 18px; }
-    .section-body { padding: 16px; }
+    .sec-bd { padding: 14px; }
 
-    /* ──────────────── Champion Picks ──────────────── */
-    .champion-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 14px;
+    /* CHAMPION */
+    .champ-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+    .slot {
+      border: 1px dashed var(--line); border-radius: 8px;
+      padding: 12px 6px; text-align: center; min-height: 64px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
     }
-    .pick-slot {
-      border: 2px dashed var(--border);
-      border-radius: 10px;
-      padding: 12px 8px;
-      text-align: center;
-      min-height: 72px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      transition: border-color .2s;
-    }
-    .pick-slot.filled {
-      border: 2px solid var(--accent);
-      background: rgba(59,130,246,.08);
-    }
-    .pick-slot .team-flag { font-size: 28px; }
-    .pick-slot .team-name { font-size: 13px; font-weight: 600; }
-    .pick-slot .remove-btn {
-      font-size: 10px;
-      color: var(--red);
-      cursor: pointer;
-      margin-top: 2px;
-    }
-    .pick-slot .slot-label { font-size: 12px; color: var(--muted); }
-    .deadline-note {
-      font-size: 12px;
-      color: var(--muted);
-      text-align: center;
-      margin-bottom: 12px;
-    }
+    .slot.filled { border: 1px solid var(--gold); background: rgba(201,168,76,.06); }
+    .slot .fl  { font-size: 24px; }
+    .slot .nm  { font-size: 12px; font-weight: 700; margin-top: 2px; }
+    .slot .rm  { font-size: 10px; color: var(--red); cursor: pointer; margin-top: 3px; }
+    .slot .emp { font-size: 11px; color: var(--muted); }
+    .dl { font-size: 10px; color: var(--muted); text-align: right; letter-spacing: 0; text-transform: none; }
 
-    /* Team search */
-    .team-search-wrap { position: relative; }
-    .team-search-input {
-      width: 100%;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 14px;
-      color: var(--text);
-      font-family: var(--font-body);
-      font-size: 14px;
-      outline: none;
+    .swrap { position: relative; }
+    .sinp {
+      width: 100%; background: var(--bg); border: 1px solid var(--line);
+      border-radius: 7px; padding: 9px 12px; color: var(--text);
+      font-family: var(--body); font-size: 14px; outline: none;
     }
-    .team-search-input:focus { border-color: var(--accent); }
-    .team-dropdown {
-      display: none;
-      position: absolute;
-      top: calc(100% + 4px);
-      left: 0; right: 0;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      max-height: 200px;
-      overflow-y: auto;
-      z-index: 50;
+    .sinp:focus { border-color: var(--gold); }
+    .sinp::placeholder { color: var(--muted); }
+    .tdd {
+      display: none; position: absolute; top: calc(100% + 3px); left: 0; right: 0;
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 8px; max-height: 170px; overflow-y: auto; z-index: 60;
     }
-    .team-dropdown.open { display: block; }
-    .team-option {
-      padding: 10px 14px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 14px;
+    .tdd.open { display: block; }
+    .topt {
+      padding: 8px 12px; cursor: pointer; font-size: 13px;
+      display: flex; align-items: center; gap: 8px;
+      border-bottom: 1px solid var(--line);
     }
-    .team-option:hover { background: var(--border); }
+    .topt:last-child { border: none; }
+    .topt:hover { background: var(--line); }
+    .bsave {
+      width: 100%; margin-top: 10px; background: var(--blue);
+      color: #fff; border: none; border-radius: 7px; padding: 11px;
+      font-family: var(--body); font-size: 14px; font-weight: 700; cursor: pointer;
+    }
+    .bsave:disabled { opacity: .4; cursor: not-allowed; }
 
-    /* Save button */
-    .btn-save {
-      width: 100%;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 12px;
-      font-family: var(--font-body);
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 10px;
-      transition: opacity .2s;
+    /* LEADERBOARD */
+    .lb-tog {
+      width: 100%; background: none; border: none; color: var(--text);
+      font-family: var(--body); font-size: 10px; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      padding: 11px 14px; cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between;
     }
-    .btn-save:hover { opacity: .85; }
-    .btn-save:disabled { opacity: .4; cursor: not-allowed; }
-
-    /* ──────────────── Leaderboard ──────────────── */
-    .leaderboard-toggle {
-      width: 100%;
-      background: none;
-      border: none;
-      color: var(--text);
-      font-family: var(--font-body);
-      font-size: 15px;
-      padding: 14px 16px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .leaderboard-content { display: none; }
-    .leaderboard-content.open { display: block; }
+    .lb-body { display: none; border-top: 1px solid var(--line); }
+    .lb-body.open { display: block; }
     .lb-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 16px;
-      border-top: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 14px; border-bottom: 1px solid var(--line);
     }
-    .lb-rank {
-      font-family: var(--font-display);
-      font-size: 20px;
-      width: 28px;
-      text-align: center;
-      color: var(--muted);
+    .lb-row:last-child { border: none; }
+    .lb-no { font-family: var(--head); font-size: 18px; width: 22px; text-align: center; color: var(--muted); flex-shrink: 0; }
+    .lb-no.g1 { color: var(--gold); }
+    .lb-no.g2 { color: #94a3b8; }
+    .lb-no.g3 { color: #b45309; }
+    .lb-av { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+    .lb-info { flex: 1; }
+    .lb-name { font-size: 13px; font-weight: 600; }
+    .lb-stat { font-size: 10px; color: var(--muted); margin-top: 1px; }
+    .lb-prize { font-size: 10px; color: var(--green); margin-top: 1px; }
+    .lb-pt { font-family: var(--head); font-size: 20px; color: var(--gold); flex-shrink: 0; }
+
+    /* MATCHES */
+    .tabs {
+      display: flex; border-bottom: 1px solid var(--line);
+      overflow-x: auto; scrollbar-width: none;
     }
-    .lb-rank.gold { color: #f59e0b; }
-    .lb-rank.silver { color: #94a3b8; }
-    .lb-rank.bronze { color: #b45309; }
-    .lb-avatar {
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      object-fit: cover;
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab {
+      padding: 10px 14px; font-size: 11px; font-weight: 600; color: var(--muted);
+      cursor: pointer; white-space: nowrap; flex-shrink: 0;
+      background: none; border: none; border-bottom: 2px solid transparent;
+      font-family: var(--body); transition: color .15s;
     }
-    .lb-name { flex: 1; font-size: 14px; font-weight: 600; }
-    .lb-points {
-      font-weight: 700;
-      color: var(--accent2);
-      font-size: 15px;
+    .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+    .mcard { padding: 12px 14px; border-bottom: 1px solid var(--line); }
+    .mcard:last-child { border: none; }
+    .minfo {
+      display: flex; justify-content: space-between;
+      font-size: 10px; color: var(--muted); margin-bottom: 8px; letter-spacing: .3px;
     }
-    .lb-stats { font-size: 11px; color: var(--muted); margin-top: 2px; }
-    .lb-prize {
-      font-size: 11px;
-      color: var(--green);
+    .mrow { display: grid; grid-template-columns: 1fr 60px 1fr; align-items: center; }
+    .tcol { text-align: center; }
+    .tcol .fl { font-size: 20px; display: block; }
+    .tcol .nm { font-size: 11px; font-weight: 600; margin-top: 2px; line-height: 1.2; }
+    .scol { text-align: center; }
+    .snum { font-family: var(--head); font-size: 24px; letter-spacing: 2px; line-height: 1; }
+    .svs  { font-size: 12px; color: var(--muted); }
+    .live-dot { display: inline-block; width: 5px; height: 5px; background: var(--red); border-radius: 50%; margin-right: 3px; animation: blink 1s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.15} }
+
+    /* predict */
+    .ppanel { margin-top: 10px; }
+    .pbts { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; }
+    .pbtn {
+      padding: 7px 4px; border-radius: 6px;
+      border: 1px solid var(--line); background: var(--bg);
+      color: var(--muted); font-family: var(--body); font-size: 11px; font-weight: 600;
+      cursor: pointer; text-align: center; line-height: 1.4;
+    }
+    .pbtn.sel { border-color: var(--blue); background: rgba(26,86,219,.12); color: var(--text); }
+    .pscore { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+    .sinpn {
+      flex: 1; background: var(--bg); border: 1px solid var(--line);
+      border-radius: 6px; padding: 6px; color: var(--text);
+      font-size: 16px; text-align: center; font-family: var(--body); outline: none;
+    }
+    .sinpn:focus { border-color: var(--gold); }
+    .ssep { color: var(--muted); }
+    .psavebtn {
+      padding: 6px 12px; background: var(--green);
+      border: none; border-radius: 6px; color: #fff;
+      font-family: var(--body); font-size: 12px; font-weight: 700; cursor: pointer;
+    }
+    .pdone {
+      margin-top: 7px; padding: 6px 10px;
+      background: rgba(6,199,85,.07); border: 1px solid rgba(6,199,85,.2);
+      border-radius: 6px; font-size: 11px; color: var(--green);
     }
 
-    /* ──────────────── Match List ──────────────── */
-    .match-filter {
-      display: flex;
-      gap: 6px;
-      padding: 12px 16px;
-      overflow-x: auto;
-      scrollbar-width: none;
-      border-bottom: 1px solid var(--border);
-    }
-    .match-filter::-webkit-scrollbar { display: none; }
-    .filter-btn {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      border-radius: 20px;
-      padding: 5px 14px;
-      font-family: var(--font-body);
-      font-size: 12px;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all .2s;
-    }
-    .filter-btn.active {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #fff;
-    }
-
-    .match-card {
-      border-bottom: 1px solid var(--border);
-      padding: 14px 16px;
-    }
-    .match-meta {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-    .match-teams {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: center;
-      gap: 8px;
-    }
-    .team-side { text-align: center; }
-    .team-side .flag { font-size: 24px; display: block; }
-    .team-side .name { font-size: 13px; font-weight: 600; margin-top: 2px; }
-    .score-center { text-align: center; }
-    .score-display {
-      font-family: var(--font-display);
-      font-size: 24px;
-      letter-spacing: 2px;
-      color: var(--text);
-    }
-    .score-vs {
-      font-size: 13px;
-      color: var(--muted);
-    }
-    .match-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-      margin-top: 10px;
-    }
-    .predict-btn {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 8px;
-      color: var(--text);
-      font-family: var(--font-body);
-      font-size: 12px;
-      cursor: pointer;
-      text-align: center;
-      transition: all .2s;
-    }
-    .predict-btn:hover { border-color: var(--accent); }
-    .predict-btn.selected { background: var(--accent); border-color: var(--accent); color: #fff; }
-    .predict-score-row {
-      display: flex;
-      gap: 6px;
-      margin-top: 6px;
-      grid-column: span 2;
-    }
-    .score-input {
-      width: 100%;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 6px 8px;
-      color: var(--text);
-      font-family: var(--font-body);
-      font-size: 14px;
-      text-align: center;
-      outline: none;
-    }
-    .score-input:focus { border-color: var(--accent2); }
-    .score-dash { line-height: 32px; color: var(--muted); }
-    .save-match-btn {
-      background: var(--green);
-      border: none;
-      border-radius: 6px;
-      color: #fff;
-      font-family: var(--font-body);
-      font-size: 12px;
-      font-weight: 700;
-      padding: 6px 12px;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .match-predicted {
-      margin-top: 8px;
-      padding: 6px 10px;
-      background: rgba(34,197,94,.1);
-      border: 1px solid rgba(34,197,94,.3);
-      border-radius: 6px;
-      font-size: 12px;
-      color: var(--green);
-      display: flex;
-      gap: 6px;
-    }
-
-    /* ──────────────── Loading ──────────────── */
-    .loading {
-      text-align: center;
-      padding: 40px;
-      color: var(--muted);
-    }
-    .spinner {
-      width: 32px; height: 32px;
-      border: 3px solid var(--border);
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      animation: spin .8s linear infinite;
-      margin: 0 auto 12px;
+    /* misc */
+    .loading { text-align: center; padding: 28px 16px; color: var(--muted); font-size: 13px; }
+    .spin {
+      width: 26px; height: 26px; border-radius: 50%;
+      border: 2px solid var(--line); border-top-color: var(--gold);
+      animation: spin .7s linear infinite; margin: 0 auto 8px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ──────────────── Toast ──────────────── */
     .toast {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%) translateY(80px);
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 50px;
-      padding: 10px 20px;
-      font-size: 14px;
-      transition: transform .3s;
-      z-index: 999;
-      white-space: nowrap;
+      position: fixed; bottom: 18px; left: 50%;
+      transform: translateX(-50%) translateY(60px);
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 50px; padding: 8px 16px;
+      font-size: 12px; transition: transform .22s; z-index: 999;
+      white-space: nowrap; pointer-events: none;
     }
     .toast.show { transform: translateX(-50%) translateY(0); }
-    .toast.success { border-color: var(--green); color: var(--green); }
-    .toast.error { border-color: var(--red); color: var(--red); }
-
-    /* ──────────────── Modal ──────────────── */
-    .modal-overlay {
-      display: none;
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,.7);
-      z-index: 200;
-      align-items: flex-end;
-      justify-content: center;
-    }
-    .modal-overlay.open { display: flex; }
-    .modal-sheet {
-      background: var(--surface);
-      border-radius: 20px 20px 0 0;
-      width: 100%;
-      max-width: 480px;
-      padding: 20px;
-      max-height: 80vh;
-      overflow-y: auto;
-    }
-    .modal-title { font-weight: 700; font-size: 17px; margin-bottom: 16px; }
-
-    .result-buttons { display: flex; gap: 8px; }
-    .result-btn {
-      flex: 1;
-      padding: 10px;
-      border-radius: 8px;
-      border: 2px solid var(--border);
-      background: var(--surface2);
-      color: var(--text);
-      font-family: var(--font-body);
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      text-align: center;
-      transition: all .2s;
-    }
-    .result-btn.selected { border-color: var(--accent); background: rgba(59,130,246,.15); }
-    .result-btn.win { border-color: var(--green); }
-    .result-btn.draw { border-color: var(--accent2); }
-    .result-btn.lose { border-color: var(--red); }
+    .toast.ok  { border-color: var(--green); color: var(--green); }
+    .toast.err { border-color: var(--red);   color: var(--red); }
   </style>
 </head>
 <body>
 
-<div class="app-header">
-  <h1>⚽ WORLD CUP 2026</h1>
-  <p>Canada · Mexico · USA</p>
-</div>
-
-<!-- Login Screen -->
-<div id="login-screen">
-  <div class="login-icon">🏆</div>
-  <div class="login-title">ทายผลบอลโลก 2026</div>
-  <div class="login-desc">
-    สะสมแต้ม ทายผล ทายสกอร์ และทายแชมป์<br/>
-    ลุ้นเงินรางวัลกับเพื่อนในวง!
+<header>
+  <div>
+    <div class="logo">WC 2026</div>
+    <div class="sub">CANADA · MEXICO · USA</div>
   </div>
+  <div class="n26">26</div>
+</header>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-year">2026</div>
+  <div class="login-title">ทายผลบอลโลก</div>
+
+  <div class="rule-box">
+    <div class="rule-label">กติกาสะสมแต้ม</div>
+    <div class="rule-row"><span class="rule-pt">1</span><span class="rule-txt">pt — ทายผล ถูก (ชนะ / แพ้ / เสมอ)</span></div>
+    <div class="rule-row"><span class="rule-pt">2</span><span class="rule-txt">pt — ทายสกอร์ถูกทั้งคู่</span></div>
+    <div class="rule-row"><span class="rule-pt">5</span><span class="rule-txt">pt — ทายแชมป์ถูก (เลือกได้ 2 ทีม)</span></div>
+  </div>
+
+  <div class="rule-box">
+    <div class="rule-label" style="text-align:center;">เงินรางวัล 3 อันดับแรก</div>
+    <div class="prize-grid">
+      <div><div class="prize-pct" style="color:var(--gold)">50%</div><div class="prize-lbl">อันดับ 1</div></div>
+      <div><div class="prize-pct" style="color:#94a3b8">30%</div><div class="prize-lbl">อันดับ 2</div></div>
+      <div><div class="prize-pct" style="color:#b45309">15%</div><div class="prize-lbl">อันดับ 3</div></div>
+      <div><div class="prize-pct" style="color:var(--muted)">5%</div><div class="prize-lbl">ทำบุญ</div></div>
+    </div>
+  </div>
+
   <button class="btn-line" onclick="loginWithLine()">
     <svg viewBox="0 0 24 24" fill="white"><path d="M19.952 12.457c0-4.4-4.41-7.98-9.828-7.98C4.706 4.477.3 8.057.3 12.457c0 3.944 3.497 7.244 8.22 7.867.32.069.756.211.866.485.099.25.065.64.032.89l-.14.84c-.043.25-.197.975.855.531 1.052-.443 5.676-3.34 7.744-5.718C19.33 15.4 19.952 14 19.952 12.457z"/></svg>
     เข้าสู่ระบบด้วย LINE
   </button>
 </div>
 
-<!-- Main App -->
+<!-- MAIN -->
 <div id="main-app">
 
-  <!-- Profile -->
-  <div class="profile-card">
-    <img id="user-avatar" class="profile-avatar" src="" alt="avatar" />
-    <div class="profile-info">
-      <div class="profile-name" id="user-name">-</div>
-      <div class="profile-points">
-        <span>คะแนนของฉัน</span>
-        <span class="points-badge" id="user-points">0 pt</span>
-      </div>
+  <div class="profile">
+    <img id="ua" src="" alt="" />
+    <div>
+      <div class="pname" id="un">-</div>
+      <div class="ppts" id="upt">0 <small>pt</small></div>
     </div>
   </div>
 
-  <!-- Champion Picks -->
-  <div class="section">
-    <div class="section-header">
-      <span class="icon">🥇</span>
-      <span>ทายทีมแชมป์ (เลือกได้ 2 ทีม)</span>
+  <!-- Champion -->
+  <div class="sec">
+    <div class="sec-hd">
+      ทายทีมแชมป์ — เลือกได้ 2 ทีม
+      <span class="dl" id="dl"></span>
     </div>
-    <div class="section-body">
-      <div class="deadline-note" id="champion-deadline">⏰ เปลี่ยนได้ถึง: --/--/----</div>
-      <div class="champion-grid">
-        <div class="pick-slot" id="pick-slot-1">
-          <span class="slot-label">ทีมที่ 1</span>
-        </div>
-        <div class="pick-slot" id="pick-slot-2">
-          <span class="slot-label">ทีมที่ 2</span>
-        </div>
+    <div class="sec-bd">
+      <div class="champ-grid">
+        <div class="slot" id="ps1"><span class="emp">— ทีมที่ 1 —</span></div>
+        <div class="slot" id="ps2"><span class="emp">— ทีมที่ 2 —</span></div>
       </div>
-      <div class="team-search-wrap">
-        <input type="text" class="team-search-input" id="team-search" placeholder="🔍 ค้นหาทีม..." autocomplete="off" oninput="filterTeams(this.value)" />
-        <div class="team-dropdown" id="team-dropdown"></div>
+      <div class="swrap">
+        <input class="sinp" id="tsearch" type="text" placeholder="ค้นหาทีม..." autocomplete="off" oninput="filterTeams(this.value)" />
+        <div class="tdd" id="tdd"></div>
       </div>
-      <button class="btn-save" id="save-champion-btn" onclick="saveChampionPicks()">💾 บันทึกทีมแชมป์</button>
+      <button class="bsave" id="bsave" onclick="saveChamp()">บันทึกทีมแชมป์</button>
     </div>
   </div>
 
   <!-- Leaderboard -->
-  <div class="section">
-    <button class="leaderboard-toggle" onclick="toggleLeaderboard()">
-      <span>🏅 ตารางคะแนน</span>
-      <span id="lb-arrow">▼</span>
-    </button>
-    <div class="leaderboard-content" id="leaderboard-content">
-      <div id="leaderboard-body">
-        <div class="loading"><div class="spinner"></div>กำลังโหลด...</div>
-      </div>
-    </div>
+  <div class="sec">
+    <button class="lb-tog" onclick="toggleLb()">ตารางคะแนน <span id="lbarr" style="color:var(--muted);font-size:10px">▼</span></button>
+    <div class="lb-body" id="lbb"><div class="loading"><div class="spin"></div>กำลังโหลด...</div></div>
   </div>
 
-  <!-- Match List -->
-  <div class="section">
-    <div class="section-header">
-      <span class="icon">📋</span>
-      <span>รายการแมตช์</span>
+  <!-- Matches -->
+  <div class="sec">
+    <div class="tabs">
+      <button class="tab active" onclick="setTab('all',this)">ทั้งหมด</button>
+      <button class="tab" onclick="setTab('upcoming',this)">กำลังจะแข่ง</button>
+      <button class="tab" onclick="setTab('live',this)">Live</button>
+      <button class="tab" onclick="setTab('finished',this)">จบแล้ว</button>
     </div>
-    <div class="match-filter">
-      <button class="filter-btn active" onclick="filterMatches('all',this)">ทั้งหมด</button>
-      <button class="filter-btn" onclick="filterMatches('upcoming',this)">กำลังจะแข่ง</button>
-      <button class="filter-btn" onclick="filterMatches('live',this)">🔴 LIVE</button>
-      <button class="filter-btn" onclick="filterMatches('finished',this)">จบแล้ว</button>
-    </div>
-    <div id="match-list">
-      <div class="loading"><div class="spinner"></div>กำลังโหลดแมตช์...</div>
-    </div>
+    <div id="ml"><div class="loading"><div class="spin"></div>กำลังโหลดแมตช์...</div></div>
   </div>
 
-</div><!-- /#main-app -->
+</div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ══════════════════════════════════════════════
-//  CONFIG — แก้ค่าเหล่านี้ก่อน deploy
-// ══════════════════════════════════════════════
-const CONFIG = {
-  GAS_URL:      'YOUR_GAS_WEB_APP_URL',          // URL จาก GAS Deploy as Web App
-  LINE_CLIENT_ID: 'YOUR_LINE_CHANNEL_ID',         // จาก LINE Developers Console
-  REDIRECT_URI:   'YOUR_GITHUB_PAGES_URL',        // https://yourusername.github.io/yourrepo/
-  LIFF_ID:        'YOUR_LIFF_ID',                 // จาก LINE Developers → LIFF
+// ── CONFIG ──────────────────────────────────────
+const CFG = {
+  GAS:   'https://script.google.com/macros/s/AKfycby6ggHrmpERG8cGGbhAxztc_N7GTo-XPWCQUWG8xVXwVKAO_kEJebaKG8E3A97IIXlP/exec',
+  LID:   '2007654321',   // ← ใส่ LINE Channel ID ของคุณ
+  REDIR: 'https://auariya-cpu.github.io/888/',
 };
 
-// ══════════════════════════════════════════════
-//  World Cup 2026 Teams
-// ══════════════════════════════════════════════
+// ── TEAMS ────────────────────────────────────────
 const TEAMS = [
-  {name:'Argentina',flag:'🇦🇷'},{name:'France',flag:'🇫🇷'},{name:'Brazil',flag:'🇧🇷'},
-  {name:'England',flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿'},{name:'Spain',flag:'🇪🇸'},{name:'Germany',flag:'🇩🇪'},
-  {name:'Portugal',flag:'🇵🇹'},{name:'Netherlands',flag:'🇳🇱'},{name:'Belgium',flag:'🇧🇪'},
-  {name:'Uruguay',flag:'🇺🇾'},{name:'Croatia',flag:'🇭🇷'},{name:'Morocco',flag:'🇲🇦'},
-  {name:'USA',flag:'🇺🇸'},{name:'Mexico',flag:'🇲🇽'},{name:'Canada',flag:'🇨🇦'},
-  {name:'Japan',flag:'🇯🇵'},{name:'South Korea',flag:'🇰🇷'},{name:'Australia',flag:'🇦🇺'},
-  {name:'Senegal',flag:'🇸🇳'},{name:'Nigeria',flag:'🇳🇬'},{name:'Ghana',flag:'🇬🇭'},
-  {name:'Ecuador',flag:'🇪🇨'},{name:'Colombia',flag:'🇨🇴'},{name:'Chile',flag:'🇨🇱'},
-  {name:'Poland',flag:'🇵🇱'},{name:'Switzerland',flag:'🇨🇭'},{name:'Denmark',flag:'🇩🇰'},
-  {name:'Serbia',flag:'🇷🇸'},{name:'Turkey',flag:'🇹🇷'},{name:'Iran',flag:'🇮🇷'},
-  {name:'Saudi Arabia',flag:'🇸🇦'},{name:'Qatar',flag:'🇶🇦'},{name:'Thailand',flag:'🇹🇭'},
+  {n:'Argentina',f:'🇦🇷'},{n:'France',f:'🇫🇷'},{n:'Brazil',f:'🇧🇷'},
+  {n:'England',f:'🏴󠁧󠁢󠁥󠁮󠁧󠁿'},{n:'Spain',f:'🇪🇸'},{n:'Germany',f:'🇩🇪'},
+  {n:'Portugal',f:'🇵🇹'},{n:'Netherlands',f:'🇳🇱'},{n:'Belgium',f:'🇧🇪'},
+  {n:'Uruguay',f:'🇺🇾'},{n:'Croatia',f:'🇭🇷'},{n:'Morocco',f:'🇲🇦'},
+  {n:'USA',f:'🇺🇸'},{n:'Mexico',f:'🇲🇽'},{n:'Canada',f:'🇨🇦'},
+  {n:'Japan',f:'🇯🇵'},{n:'South Korea',f:'🇰🇷'},{n:'Australia',f:'🇦🇺'},
+  {n:'Senegal',f:'🇸🇳'},{n:'Nigeria',f:'🇳🇬'},{n:'Ghana',f:'🇬🇭'},
+  {n:'Ecuador',f:'🇪🇨'},{n:'Colombia',f:'🇨🇴'},{n:'Chile',f:'🇨🇱'},
+  {n:'Poland',f:'🇵🇱'},{n:'Switzerland',f:'🇨🇭'},{n:'Denmark',f:'🇩🇰'},
+  {n:'Serbia',f:'🇷🇸'},{n:'Turkey',f:'🇹🇷'},{n:'Iran',f:'🇮🇷'},
+  {n:'Saudi Arabia',f:'🇸🇦'},{n:'Qatar',f:'🇶🇦'},{n:'New Zealand',f:'🇳🇿'},
+  {n:'Panama',f:'🇵🇦'},{n:'Honduras',f:'🇭🇳'},{n:'Costa Rica',f:'🇨🇷'},
+  {n:'Jamaica',f:'🇯🇲'},{n:'DR Congo',f:'🇨🇩'},{n:'Cameroon',f:'🇨🇲'},
+  {n:'Tunisia',f:'🇹🇳'},{n:'Egypt',f:'🇪🇬'},{n:'Algeria',f:'🇩🇿'},
+  {n:'South Africa',f:'🇿🇦'},{n:'Ukraine',f:'🇺🇦'},{n:'Scotland',f:'🏴󠁧󠁢󠁳󠁣󠁴󠁿'},
+  {n:'Romania',f:'🇷🇴'},{n:'Austria',f:'🇦🇹'},{n:'Czechia',f:'🇨🇿'},
+  {n:'Norway',f:'🇳🇴'},{n:'Venezuela',f:'🇻🇪'},{n:'Paraguay',f:'🇵🇾'},
+  {n:'Bolivia',f:'🇧🇴'},{n:'Peru',f:'🇵🇪'},
 ];
 
-// ══════════════════════════════════════════════
-//  State
-// ══════════════════════════════════════════════
-let state = {
-  user: null,         // {lineId, name, picture, points}
-  championPicks: [],  // [{name,flag}, {name,flag}]
-  predictions: {},    // {matchId: {result, home, away}}
-  matches: [],        // from GAS
-  leaderboard: [],    // from GAS
-  currentFilter: 'all',
-};
+// ── STATE ────────────────────────────────────────
+let S = { user:null, picks:[], preds:{}, matches:[], tab:'all' };
 
-// ══════════════════════════════════════════════
-//  INIT
-// ══════════════════════════════════════════════
+// ── INIT ─────────────────────────────────────────
 window.addEventListener('load', async () => {
-  // Check LINE callback
-  const params = new URLSearchParams(location.search);
-  if (params.get('code')) {
-    await handleLineCallback(params.get('code'), params.get('state'));
-    return;
-  }
-  // Check stored session
-  const stored = localStorage.getItem('wc2026_user');
-  if (stored) {
-    state.user = JSON.parse(stored);
-    await showMainApp();
-  }
+  const p = new URLSearchParams(location.search);
+  if (p.get('code')) { await cb(p.get('code'), p.get('state')); return; }
+  const u = localStorage.getItem('wc26u');
+  if (u) { S.user = JSON.parse(u); await boot(); }
 });
 
-// ══════════════════════════════════════════════
-//  LINE LOGIN
-// ══════════════════════════════════════════════
+// ── LINE LOGIN ───────────────────────────────────
 function loginWithLine() {
-  const nonce = Math.random().toString(36).slice(2);
-  sessionStorage.setItem('line_state', nonce);
-  const url = new URL('https://access.line.me/oauth2/v2.1/authorize');
-  url.searchParams.set('response_type', 'code');
-  url.searchParams.set('client_id', CONFIG.LINE_CLIENT_ID);
-  url.searchParams.set('redirect_uri', CONFIG.REDIRECT_URI);
-  url.searchParams.set('state', nonce);
-  url.searchParams.set('scope', 'profile openid');
-  location.href = url.toString();
+  const ns = Math.random().toString(36).slice(2);
+  sessionStorage.setItem('ls', ns);
+  const u = new URL('https://access.line.me/oauth2/v2.1/authorize');
+  u.searchParams.set('response_type','code');
+  u.searchParams.set('client_id', CFG.LID);
+  u.searchParams.set('redirect_uri', CFG.REDIR);
+  u.searchParams.set('state', ns);
+  u.searchParams.set('scope','profile openid');
+  location.href = u.toString();
 }
 
-async function handleLineCallback(code, lineState) {
-  if (lineState !== sessionStorage.getItem('line_state')) {
-    showToast('❌ State mismatch', 'error');
-    return;
-  }
-  // Exchange code via GAS (GAS handles token exchange server-side)
+async function cb(code, st) {
+  if (st !== sessionStorage.getItem('ls')) { toast('State error','err'); return; }
   try {
-    const res = await gasCall('lineLogin', { code, redirectUri: CONFIG.REDIRECT_URI });
-    state.user = res.user;
-    localStorage.setItem('wc2026_user', JSON.stringify(state.user));
+    const r = await gas('lineLogin', { code, redirectUri: CFG.REDIR });
+    S.user = r.user;
+    localStorage.setItem('wc26u', JSON.stringify(S.user));
     history.replaceState({}, '', location.pathname);
-    await showMainApp();
-  } catch(e) {
-    showToast('❌ Login failed: ' + e.message, 'error');
-  }
+    await boot();
+  } catch(e) { toast('Login ไม่สำเร็จ','err'); }
 }
 
-// ══════════════════════════════════════════════
-//  GAS API CALL
-// ══════════════════════════════════════════════
-async function gasCall(action, params = {}) {
-  const payload = { action, lineId: state.user?.lineId, ...params };
-  const res = await fetch(CONFIG.GAS_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
+// ── GAS CALL ─────────────────────────────────────
+async function gas(action, extra={}) {
+  const r = await fetch(CFG.GAS, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ action, lineId: S.user?.lineId, ...extra }),
   });
-  const data = await res.json();
-  if (!data.ok) throw new Error(data.message || 'Error');
-  return data;
+  const d = await r.json();
+  if (!d.ok) throw new Error(d.message||'Error');
+  return d;
 }
 
-// ══════════════════════════════════════════════
-//  SHOW MAIN APP
-// ══════════════════════════════════════════════
-async function showMainApp() {
+// ── BOOT ─────────────────────────────────────────
+async function boot() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('main-app').style.display = 'block';
-
-  // Profile
-  document.getElementById('user-name').textContent = state.user.name;
-  document.getElementById('user-avatar').src = state.user.picture || 'https://via.placeholder.com/56';
-  document.getElementById('user-points').textContent = (state.user.points || 0) + ' pt';
-
-  // Load data
-  await Promise.all([
-    loadUserData(),
-    loadMatches(),
-  ]);
+  document.getElementById('ua').src = S.user.picture||'';
+  document.getElementById('un').textContent = S.user.name;
+  document.getElementById('upt').innerHTML = (S.user.points||0)+' <small>pt</small>';
+  await Promise.all([loadUser(), loadMatches()]);
 }
 
-async function loadUserData() {
+async function loadUser() {
   try {
-    const res = await gasCall('getUserData');
-    state.user.points = res.points;
-    state.championPicks = res.championPicks || [];
-    state.predictions = res.predictions || {};
-    document.getElementById('user-points').textContent = res.points + ' pt';
-    renderChampionPicks();
-    renderDeadline(res.championDeadline);
+    const r = await gas('getUserData');
+    S.user.points = r.points;
+    S.picks = r.championPicks||[];
+    S.preds = r.predictions||{};
+    document.getElementById('upt').innerHTML = r.points+' <small>pt</small>';
+    renderPicks();
+    if (r.championDeadline) {
+      const d = new Date(r.championDeadline);
+      document.getElementById('dl').textContent =
+        'ถึง '+d.toLocaleDateString('th-TH',{day:'numeric',month:'short'})+' '+
+        d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+    }
   } catch(e) { console.warn(e); }
 }
 
 async function loadMatches() {
   try {
-    const res = await gasCall('getMatches');
-    state.matches = res.matches || [];
+    const r = await gas('getMatches');
+    S.matches = r.matches||[];
     renderMatches();
   } catch(e) {
-    document.getElementById('match-list').innerHTML =
-      '<div class="loading" style="color:var(--red)">❌ โหลดแมตช์ไม่ได้ กรุณาลองใหม่</div>';
+    document.getElementById('ml').innerHTML='<div class="loading" style="color:var(--red)">โหลดไม่ได้ ลองใหม่</div>';
   }
 }
 
-// ══════════════════════════════════════════════
-//  CHAMPION PICKS
-// ══════════════════════════════════════════════
-function renderDeadline(dt) {
-  if (!dt) return;
-  const d = new Date(dt);
-  document.getElementById('champion-deadline').textContent =
-    `⏰ เปลี่ยนได้ถึง: ${d.toLocaleDateString('th-TH')} ${d.toLocaleTimeString('th-TH', {hour:'2-digit',minute:'2-digit'})}`;
-}
-
-function renderChampionPicks() {
-  for (let i = 0; i < 2; i++) {
-    const slot = document.getElementById(`pick-slot-${i+1}`);
-    const pick = state.championPicks[i];
-    if (pick) {
-      slot.className = 'pick-slot filled';
-      slot.innerHTML = `
-        <span class="team-flag">${pick.flag}</span>
-        <span class="team-name">${pick.name}</span>
-        <span class="remove-btn" onclick="removePick(${i})">✕ เอาออก</span>
-      `;
+// ── CHAMPION PICKS ───────────────────────────────
+function renderPicks() {
+  [0,1].forEach(i=>{
+    const el=document.getElementById(`ps${i+1}`), pk=S.picks[i];
+    if (pk) {
+      el.className='slot filled';
+      el.innerHTML=`<span class="fl">${pk.flag||pk.f}</span><span class="nm">${pk.name||pk.n}</span><span class="rm" onclick="rmPick(${i})">ลบออก</span>`;
     } else {
-      slot.className = 'pick-slot';
-      slot.innerHTML = `<span class="slot-label">ทีมที่ ${i+1}</span>`;
+      el.className='slot';
+      el.innerHTML=`<span class="emp">— ทีมที่ ${i+1} —</span>`;
     }
-  }
+  });
 }
 
 function filterTeams(q) {
-  const dd = document.getElementById('team-dropdown');
-  if (!q) { dd.classList.remove('open'); return; }
-  const filtered = TEAMS.filter(t => t.name.toLowerCase().includes(q.toLowerCase()));
-  if (!filtered.length) { dd.classList.remove('open'); return; }
-  dd.innerHTML = filtered.map(t =>
-    `<div class="team-option" onclick="selectTeam('${t.name}','${t.flag}')">
-      <span>${t.flag}</span><span>${t.name}</span>
-    </div>`
-  ).join('');
+  const dd=document.getElementById('tdd');
+  if (!q.trim()) { dd.classList.remove('open'); return; }
+  const f=TEAMS.filter(t=>t.n.toLowerCase().includes(q.toLowerCase())).slice(0,8);
+  if (!f.length) { dd.classList.remove('open'); return; }
+  dd.innerHTML=f.map(t=>`<div class="topt" onclick="pickTeam('${t.n}','${t.f}')">${t.f} ${t.n}</div>`).join('');
   dd.classList.add('open');
 }
 
-function selectTeam(name, flag) {
-  if (state.championPicks.find(p => p.name === name)) {
-    showToast('⚠️ เลือกทีมนี้แล้ว', 'error'); return;
-  }
-  if (state.championPicks.length >= 2) {
-    showToast('⚠️ เลือกได้แค่ 2 ทีม', 'error'); return;
-  }
-  state.championPicks.push({ name, flag });
-  renderChampionPicks();
-  document.getElementById('team-search').value = '';
-  document.getElementById('team-dropdown').classList.remove('open');
+function pickTeam(n,f) {
+  if (S.picks.find(p=>(p.name||p.n)===n)) { toast('เลือกทีมนี้แล้ว','err'); return; }
+  if (S.picks.length>=2) { toast('เลือกได้แค่ 2 ทีม','err'); return; }
+  S.picks.push({name:n,flag:f}); renderPicks();
+  document.getElementById('tsearch').value='';
+  document.getElementById('tdd').classList.remove('open');
 }
 
-function removePick(idx) {
-  state.championPicks.splice(idx, 1);
-  renderChampionPicks();
+function rmPick(i) { S.picks.splice(i,1); renderPicks(); }
+
+async function saveChamp() {
+  const b=document.getElementById('bsave');
+  b.disabled=true; b.textContent='กำลังบันทึก...';
+  try { await gas('saveChampionPicks',{picks:S.picks}); toast('บันทึกแล้ว','ok'); }
+  catch(e) { toast(e.message,'err'); }
+  finally { b.disabled=false; b.textContent='บันทึกทีมแชมป์'; }
 }
 
-async function saveChampionPicks() {
-  const btn = document.getElementById('save-champion-btn');
-  btn.disabled = true;
-  btn.textContent = '⏳ กำลังบันทึก...';
+// ── LEADERBOARD ──────────────────────────────────
+let lbDone=false;
+async function toggleLb() {
+  const b=document.getElementById('lbb');
+  const open=b.classList.toggle('open');
+  document.getElementById('lbarr').textContent=open?'▲':'▼';
+  if (open&&!lbDone) { lbDone=true; await loadLb(); }
+}
+
+async function loadLb() {
   try {
-    await gasCall('saveChampionPicks', { picks: state.championPicks });
-    showToast('✅ บันทึกทีมแชมป์แล้ว', 'success');
-  } catch(e) {
-    showToast('❌ ' + e.message, 'error');
-  } finally {
-    btn.disabled = false;
-    btn.textContent = '💾 บันทึกทีมแชมป์';
-  }
-}
-
-// ══════════════════════════════════════════════
-//  LEADERBOARD
-// ══════════════════════════════════════════════
-let lbLoaded = false;
-async function toggleLeaderboard() {
-  const content = document.getElementById('leaderboard-content');
-  const arrow = document.getElementById('lb-arrow');
-  const open = content.classList.toggle('open');
-  arrow.textContent = open ? '▲' : '▼';
-  if (open && !lbLoaded) {
-    lbLoaded = true;
-    await loadLeaderboard();
-  }
-}
-
-async function loadLeaderboard() {
-  try {
-    const res = await gasCall('getLeaderboard');
-    state.leaderboard = res.leaderboard || [];
-    renderLeaderboard();
-  } catch(e) {
-    document.getElementById('leaderboard-body').innerHTML =
-      '<div class="loading" style="color:var(--red); padding:16px">❌ โหลดไม่ได้</div>';
-  }
-}
-
-function renderLeaderboard() {
-  const totalPot = state.leaderboard.reduce((s, u) => s + (u.paid || 0), 0);
-  const prizes = [0.5, 0.3, 0.15];
-  const rankClass = ['gold','silver','bronze'];
-  const html = state.leaderboard.map((u, i) => {
-    const prize = i < 3 ? `🏆 ฟันเงิน ${Math.floor(totalPot * prizes[i]).toLocaleString()} บาท` : '';
-    return `
+    const r=await gas('getLeaderboard'); const lb=r.leaderboard||[];
+    if (!lb.length) { document.getElementById('lbb').innerHTML='<div class="loading">ยังไม่มีข้อมูล</div>'; return; }
+    const pot=lb.length*200, prizes=[.5,.3,.15], gc=['g1','g2','g3'];
+    document.getElementById('lbb').innerHTML=lb.map((u,i)=>`
       <div class="lb-row">
-        <div class="lb-rank ${rankClass[i] || ''}">${i+1}</div>
-        <img class="lb-avatar" src="${u.picture || 'https://via.placeholder.com/36'}" onerror="this.src='https://via.placeholder.com/36'" />
-        <div style="flex:1">
+        <div class="lb-no ${gc[i]||''}">${i+1}</div>
+        <img class="lb-av" src="${u.picture||''}" onerror="this.style.display='none'" />
+        <div class="lb-info">
           <div class="lb-name">${u.name}</div>
-          <div class="lb-stats">ทายถูก ${u.correctResults||0} คู่ | สกอร์ ${u.correctScores||0} คู่</div>
-          ${prize ? `<div class="lb-prize">${prize}</div>` : ''}
+          <div class="lb-stat">ผล ${u.correctResults||0} · สกอร์ ${u.correctScores||0}</div>
+          ${i<3?`<div class="lb-prize">รางวัล ${Math.floor(pot*prizes[i]).toLocaleString()} บ.</div>`:''}
         </div>
-        <div class="lb-points">${u.points} pt</div>
-      </div>
-    `;
-  }).join('');
-  document.getElementById('leaderboard-body').innerHTML = html || '<div class="loading">ยังไม่มีข้อมูล</div>';
+        <div class="lb-pt">${u.points}</div>
+      </div>`).join('');
+  } catch(e) { document.getElementById('lbb').innerHTML='<div class="loading" style="color:var(--red)">โหลดไม่ได้</div>'; }
 }
 
-// ══════════════════════════════════════════════
-//  MATCHES
-// ══════════════════════════════════════════════
-function filterMatches(f, btn) {
-  state.currentFilter = f;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderMatches();
+// ── MATCHES ──────────────────────────────────────
+function setTab(t,el) {
+  S.tab=t;
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active'); renderMatches();
 }
 
 function renderMatches() {
-  const list = document.getElementById('match-list');
-  let matches = state.matches;
-
-  if (state.currentFilter !== 'all') {
-    matches = matches.filter(m => m.status === state.currentFilter);
-  }
-
-  if (!matches.length) {
-    list.innerHTML = '<div class="loading">ไม่มีแมตช์ในหมวดนี้</div>';
-    return;
-  }
-
-  list.innerHTML = matches.map(m => renderMatchCard(m)).join('');
+  const ml=document.getElementById('ml');
+  const ms=S.tab==='all'?S.matches:S.matches.filter(m=>m.status===S.tab);
+  if (!ms.length) { ml.innerHTML='<div class="loading">ไม่มีแมตช์ในหมวดนี้</div>'; return; }
+  ml.innerHTML=ms.map(m=>mcard(m)).join('');
 }
 
-function renderMatchCard(m) {
-  const pred = state.predictions[m.id] || {};
-  const isLive = m.status === 'live';
-  const isFinished = m.status === 'finished';
-  const canPredict = m.status === 'upcoming';
+function sid(id) { return id.replace(/[^a-z0-9_-]/gi,'_'); }
 
-  const scoreOrVs = isLive || isFinished
-    ? `<div class="score-display">${m.homeScore} - ${m.awayScore}</div>${isLive ? '<div style="font-size:11px;color:var(--red)">🔴 LIVE</div>' : ''}`
-    : `<div class="score-vs">VS</div>`;
-
-  const actionsHtml = canPredict ? `
-    <div class="match-actions">
-      <button class="predict-btn ${pred.result==='home'?'selected':''}" onclick="setPredResult('${m.id}','home','${m.homeName}')">🏠 ${m.homeName} ชนะ</button>
-      <button class="predict-btn ${pred.result==='away'?'selected':''}" onclick="setPredResult('${m.id}','away','${m.awayName}')">✈️ ${m.awayName} ชนะ</button>
-      <button class="predict-btn ${pred.result==='draw'?'selected':''}" onclick="setPredResult('${m.id}','draw','')" style="grid-column:span 2">🤝 เสมอ</button>
-      <div class="predict-score-row">
-        <input class="score-input" type="number" min="0" max="20" placeholder="0" id="home-score-${m.id}" value="${pred.homeScore??''}" />
-        <span class="score-dash">-</span>
-        <input class="score-input" type="number" min="0" max="20" placeholder="0" id="away-score-${m.id}" value="${pred.awayScore??''}" />
-        <button class="save-match-btn" onclick="savePrediction('${m.id}')">✔ บันทึก</button>
+function mcard(m) {
+  const pr=S.preds[m.id]||{}, safe=sid(m.id);
+  const live=m.status==='live', done=m.status==='finished', can=m.status==='upcoming';
+  const scoreEl=(live||done)
+    ?`<div class="snum">${m.homeScore??'-'}-${m.awayScore??'-'}</div>${live?'<div style="font-size:10px;color:var(--red);margin-top:2px"><span class="live-dot"></span>LIVE</div>':''}`
+    :`<div class="svs">VS</div>`;
+  const pdone=pr.result
+    ?`<div class="pdone">ทายไว้: ${pr.result==='home'?m.homeName+' ชนะ':pr.result==='away'?m.awayName+' ชนะ':'เสมอ'}${pr.homeScore!==undefined?' · '+pr.homeScore+'-'+pr.awayScore:''}</div>`:'';
+  const ppanel=can?`
+    <div class="ppanel">
+      <div class="pbts">
+        <button class="pbtn ${pr.result==='home'?'sel':''}" onclick="setRes('${m.id}','home')">${m.homeName}<br/>ชนะ</button>
+        <button class="pbtn ${pr.result==='draw'?'sel':''}" onclick="setRes('${m.id}','draw')">เสมอ</button>
+        <button class="pbtn ${pr.result==='away'?'sel':''}" onclick="setRes('${m.id}','away')">${m.awayName}<br/>ชนะ</button>
       </div>
-    </div>
-  ` : '';
-
-  const predictedHtml = pred.result ? `
-    <div class="match-predicted">
-      ✅ ทายไว้: ${pred.result === 'home' ? m.homeName + ' ชนะ' : pred.result === 'away' ? m.awayName + ' ชนะ' : 'เสมอ'}
-      ${(pred.homeScore !== undefined && pred.awayScore !== undefined) ? `| สกอร์ ${pred.homeScore}-${pred.awayScore}` : ''}
-    </div>
-  ` : '';
-
+      <div class="pscore">
+        <input class="sinpn" type="number" min="0" max="20" placeholder="0" id="hs-${safe}" value="${pr.homeScore??''}" />
+        <span class="ssep">—</span>
+        <input class="sinpn" type="number" min="0" max="20" placeholder="0" id="as-${safe}" value="${pr.awayScore??''}" />
+        <button class="psavebtn" onclick="savePred('${m.id}')">บันทึก</button>
+      </div>
+    </div>`:'';
   return `
-    <div class="match-card" id="match-${m.id}">
-      <div class="match-meta">
-        <span>กลุ่ม ${m.group || 'TBD'} · รอบ ${m.round || '-'}</span>
-        <span>${m.dateText || ''}</span>
+    <div class="mcard" id="mc-${safe}">
+      <div class="minfo"><span>${m.group?'กลุ่ม '+m.group+' · ':''}${m.round||''}</span><span>${m.dateText||''}</span></div>
+      <div class="mrow">
+        <div class="tcol"><span class="fl">${m.homeFlag||'🏳️'}</span><div class="nm">${m.homeName}</div></div>
+        <div class="scol">${scoreEl}</div>
+        <div class="tcol"><span class="fl">${m.awayFlag||'🏳️'}</span><div class="nm">${m.awayName}</div></div>
       </div>
-      <div class="match-teams">
-        <div class="team-side">
-          <span class="flag">${m.homeFlag || '🏳️'}</span>
-          <div class="name">${m.homeName}</div>
-        </div>
-        <div class="score-center">${scoreOrVs}</div>
-        <div class="team-side">
-          <span class="flag">${m.awayFlag || '🏳️'}</span>
-          <div class="name">${m.awayName}</div>
-        </div>
-      </div>
-      ${predictedHtml}
-      ${actionsHtml}
-    </div>
-  `;
+      ${pdone}${ppanel}
+    </div>`;
 }
 
-function setPredResult(matchId, result, teamName) {
-  if (!state.predictions[matchId]) state.predictions[matchId] = {};
-  state.predictions[matchId].result = result;
-  // Re-render just this card
-  const m = state.matches.find(x => x.id === matchId);
-  if (m) document.getElementById(`match-${matchId}`).outerHTML = renderMatchCard(m);
+function setRes(matchId, res) {
+  if (!S.preds[matchId]) S.preds[matchId]={};
+  S.preds[matchId].result=res;
+  const m=S.matches.find(x=>x.id===matchId);
+  if (m) { const el=document.getElementById('mc-'+sid(matchId)); if(el) el.outerHTML=mcard(m); }
 }
 
-async function savePrediction(matchId) {
-  const homeScore = document.getElementById(`home-score-${matchId}`)?.value;
-  const awayScore = document.getElementById(`away-score-${matchId}`)?.value;
-  const result = state.predictions[matchId]?.result;
-
-  if (!result) { showToast('⚠️ เลือกผลก่อนนะ (ชนะ/แพ้/เสมอ)', 'error'); return; }
-
-  state.predictions[matchId] = {
-    result,
-    homeScore: homeScore !== '' ? parseInt(homeScore) : undefined,
-    awayScore: awayScore !== '' ? parseInt(awayScore) : undefined,
-  };
-
+async function savePred(matchId) {
+  const safe=sid(matchId);
+  const hs=document.getElementById('hs-'+safe)?.value;
+  const as=document.getElementById('as-'+safe)?.value;
+  const res=S.preds[matchId]?.result;
+  if (!res) { toast('เลือกผลก่อน','err'); return; }
+  S.preds[matchId]={ result:res, homeScore:hs!==''?parseInt(hs):undefined, awayScore:as!==''?parseInt(as):undefined };
   try {
-    await gasCall('savePrediction', { matchId, prediction: state.predictions[matchId] });
-    showToast('✅ บันทึกการทายแล้ว!', 'success');
-    const m = state.matches.find(x => x.id === matchId);
-    if (m) document.getElementById(`match-${matchId}`).outerHTML = renderMatchCard(m);
-  } catch(e) {
-    showToast('❌ ' + e.message, 'error');
-  }
+    await gas('savePrediction',{matchId, prediction:S.preds[matchId]});
+    toast('บันทึกแล้ว','ok');
+    const m=S.matches.find(x=>x.id===matchId);
+    if (m) { const el=document.getElementById('mc-'+safe); if(el) el.outerHTML=mcard(m); }
+  } catch(e) { toast(e.message,'err'); }
 }
 
-// ══════════════════════════════════════════════
-//  TOAST
-// ══════════════════════════════════════════════
-function showToast(msg, type = '') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast show ' + type;
-  setTimeout(() => t.className = 'toast', 2800);
+// ── TOAST ────────────────────────────────────────
+function toast(msg,type='') {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast show '+type;
+  setTimeout(()=>t.className='toast',2500);
 }
 
-// Close team dropdown on outside click
-document.addEventListener('click', e => {
-  if (!e.target.closest('.team-search-wrap')) {
-    document.getElementById('team-dropdown').classList.remove('open');
-  }
+document.addEventListener('click',e=>{
+  if (!e.target.closest('.swrap')) document.getElementById('tdd').classList.remove('open');
 });
 </script>
 </body>
