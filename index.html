@@ -953,17 +953,23 @@ async function loadLb() {
 //  MATCHES
 // ══════════════════════════════════════════════════
 function getEffectiveStatus(m) {
-  const now = new Date();
+  const now     = new Date();
   const kickoff = m.matchDate ? new Date(m.matchDate) : null;
   if (!kickoff) return m.status;
 
-  const diffMin = (now - kickoff) / 60000;
+  // ถ้า API บอกว่าจบแล้ว → จบเลย ไม่ต้องเช็คอะไรเพิ่ม
+  if (m.status === 'finished' || m.status === 'completed') return 'finished';
 
-  if (m.status === 'finished') return 'finished';
+  // ถ้า API บอก live อยู่ → live
   if (m.status === 'live') return 'live';
 
-  // kickoff ผ่านไปแล้วแต่ยังไม่ครบ 120 นาที → ถือว่า live
+  const diffMin = (now - kickoff) / 60000;
+
+  // kickoff ผ่านไปแล้ว 0-120 นาที และ API ยังไม่อัพเดท → ถือว่า live
   if (diffMin >= 0 && diffMin < 120) return 'live';
+
+  // เกิน 120 นาที แต่ API ยังไม่อัพเดท → ถือว่าจบแล้ว
+  if (diffMin >= 120) return 'finished';
 
   return m.status; // upcoming
 }
