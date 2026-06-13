@@ -952,6 +952,22 @@ async function loadLb() {
 // ══════════════════════════════════════════════════
 //  MATCHES
 // ══════════════════════════════════════════════════
+function getEffectiveStatus(m) {
+  const now = new Date();
+  const kickoff = m.matchDate ? new Date(m.matchDate) : null;
+  if (!kickoff) return m.status;
+
+  const diffMin = (now - kickoff) / 60000;
+
+  if (m.status === 'finished') return 'finished';
+  if (m.status === 'live') return 'live';
+
+  // kickoff ผ่านไปแล้วแต่ยังไม่ครบ 120 นาที → ถือว่า live
+  if (diffMin >= 0 && diffMin < 120) return 'live';
+
+  return m.status; // upcoming
+}
+
 function setTab(t, el) {
   S.tab = t;
   document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
@@ -960,7 +976,10 @@ function setTab(t, el) {
 
 function renderMatches() {
   const ml = document.getElementById('ml');
-  const ms = S.tab==='all' ? S.matches : S.matches.filter(m => m.status===S.tab);
+  let ms = S.matches;
+  if (S.tab !== 'all') {
+    ms = ms.filter(m => getEffectiveStatus(m) === S.tab);
+  }
   if (!ms.length) { ml.innerHTML='<div class="loading">ไม่มีแมตช์ในหมวดนี้</div>'; return; }
   ml.innerHTML = ms.map(m => mcard(m)).join('');
 }
@@ -992,7 +1011,8 @@ function sid(id) { return String(id).replace(/[^a-z0-9_-]/gi,'_'); }
 
 function mcard(m) {
   const pr   = S.preds[m.id]||{}, safe=sid(m.id);
-  const live = m.status==='live', done=m.status==='finished', can=m.status==='upcoming';
+  const effStatus = getEffectiveStatus(m);
+  const live = effStatus === 'live', done = effStatus === 'finished', can = effStatus === 'upcoming';
 
   // สกอร์จริง — แสดงทั้ง 90 นาที และ FT (รวมต่อเวลา) ถ้ามี
   let scoreEl = '';
@@ -1018,10 +1038,7 @@ function mcard(m) {
   const pd = pr.result
     ? `<div class="pdone">${predResultTxt}${predScoreTxt}</div>` : '';
 
-  // เช็คว่าถึงเวลาแข่งแล้วหรือยัง (จาก matchDate จริง ไม่ใช่แค่ status)
-  const kickoffTime = m.matchDate ? new Date(m.matchDate) : null;
-  const isKickedOff = kickoffTime ? (new Date() >= kickoffTime) : (m.status !== 'upcoming');
-  const canPredict  = !isKickedOff; // ทายได้เฉพาะก่อนเวลาแข่ง
+  const canPredict = can;
 
   // panel ทาย
   let pp = '';
