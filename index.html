@@ -325,8 +325,51 @@
       border-radius: 6px; font-size: 11px; color: var(--green);
     }
 
-    /* misc */
-    .loading { text-align: center; padding: 28px 16px; color: var(--muted); font-size: 13px; }
+    /* MATCH STATS MODAL */
+    .stats-modal {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.75); z-index: 200;
+      align-items: flex-end; justify-content: center;
+    }
+    .stats-modal.open { display: flex; }
+    .stats-sheet {
+      background: var(--card); border-radius: 18px 18px 0 0;
+      width: 100%; max-width: 430px; padding: 20px 20px 36px;
+      animation: slideUp .25s ease;
+    }
+    @keyframes slideUp { from{transform:translateY(40px);opacity:0} to{transform:translateY(0);opacity:1} }
+    .stats-handle { width: 36px; height: 4px; background: var(--line); border-radius: 2px; margin: 0 auto 16px; }
+    .stats-title  { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .stats-sub    { font-size: 11px; color: var(--muted); margin-bottom: 16px; }
+
+    .stats-result { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+    .stats-col { text-align: center; background: var(--bg); border-radius: 8px; padding: 10px 6px; }
+    .stats-col .sc-label { font-size: 10px; color: var(--muted); margin-bottom: 4px; }
+    .stats-col .sc-pct   { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--text); line-height: 1; }
+    .stats-col .sc-count { font-size: 10px; color: var(--muted); margin-top: 2px; }
+    .stats-col.winner .sc-pct { color: var(--gold); }
+
+    .stats-bar-wrap { margin-bottom: 16px; }
+    .stats-bar-row  { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .stats-bar-lbl  { font-size: 11px; color: var(--muted); width: 56px; flex-shrink: 0; }
+    .stats-bar      { flex: 1; height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; }
+    .stats-bar-fill { height: 100%; border-radius: 3px; transition: width .5s; }
+    .stats-bar-fill.home { background: var(--blue); }
+    .stats-bar-fill.draw { background: var(--gold); }
+    .stats-bar-fill.away { background: var(--red); }
+    .stats-bar-pct  { font-size: 11px; color: var(--muted); width: 32px; text-align: right; flex-shrink: 0; }
+
+    .stats-scores-title { font-size: 10px; color: var(--muted); letter-spacing: 1px; margin-bottom: 8px; }
+    .stats-scores { display: flex; gap: 8px; flex-wrap: wrap; }
+    .stats-score-chip {
+      background: var(--bg); border: 1px solid var(--line);
+      border-radius: 20px; padding: 5px 12px;
+      font-size: 13px; font-weight: 700; color: var(--text);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .stats-score-chip .chip-pct { font-size: 10px; color: var(--muted); font-weight: 400; }
+    .stats-not-pred { font-size: 11px; color: var(--muted); margin-top: 12px; }
+    .stats-lock-msg { font-size: 12px; color: var(--muted); text-align: center; padding: 16px 0; }
     .spin {
       width: 26px; height: 26px; border-radius: 50%;
       border: 2px solid var(--line); border-top-color: var(--gold);
@@ -523,6 +566,16 @@
       <button class="tab" onclick="setTab('finished',this)">จบแล้ว</button>
     </div>
     <div id="ml"><div class="loading"><div class="spin"></div>กำลังโหลดแมตช์...</div></div>
+  </div>
+</div>
+
+<!-- MATCH STATS MODAL -->
+<div class="stats-modal" id="stats-modal" onclick="closeStats(event)">
+  <div class="stats-sheet" id="stats-sheet">
+    <div class="stats-handle"></div>
+    <div id="stats-content">
+      <div class="loading"><div class="spin"></div>กำลังโหลด...</div>
+    </div>
   </div>
 </div>
 
@@ -1020,17 +1073,22 @@ function mcard(m) {
   const effStatus = getEffectiveStatus(m);
   const live = effStatus === 'live', done = effStatus === 'finished', can = effStatus === 'upcoming';
 
-  // สกอร์จริง — แสดงทั้ง 90 นาที และ FT (รวมต่อเวลา) ถ้ามี
+  // สกอร์จริง
   let scoreEl = '';
-  if (live || done) {
+  if (live) {
+    // ระหว่างแข่ง — ไม่แสดง FT ให้แสดงแค่ LIVE
+    const hs = m.homeScore !== null && m.homeScore !== undefined ? m.homeScore : '-';
+    const as = m.awayScore !== null && m.awayScore !== undefined ? m.awayScore : '-';
+    scoreEl = `<div class="snum">${hs}-${as}</div>
+               <div style="font-size:10px;color:var(--red);margin-top:2px"><span class="live-dot"></span>LIVE</div>`;
+  } else if (done) {
+    // จบแล้ว — แสดง FT และ 90 นาที
     const reg = (m.homeScoreReg!==null && m.homeScoreReg!==undefined)
       ? `<div class="snum">${m.homeScoreReg}-${m.awayScoreReg}</div><div class="score-label">90 นาที</div>`
       : `<div class="snum">${m.homeScore??'-'}-${m.awayScore??'-'}</div>`;
-    const ft  = (m.homeScore!==null && m.homeScore!==undefined &&
-                 m.homeScore !== m.homeScoreReg)
+    const ft  = (m.homeScore!==null && m.homeScore!==undefined && m.homeScore !== m.homeScoreReg)
       ? `<div class="score-ft">FT ${m.homeScore}-${m.awayScore}</div>` : '';
-    const liveTag = live ? '<div style="font-size:10px;color:var(--red);margin-top:2px"><span class="live-dot"></span>LIVE</div>' : '';
-    scoreEl = reg + ft + liveTag;
+    scoreEl = reg + ft;
   } else {
     scoreEl = `<div class="svs">VS</div>`;
   }
@@ -1086,6 +1144,7 @@ function mcard(m) {
         <div class="minfo-right">
           <span style="color:var(--text);font-weight:600">${info.datetime}</span>
           ${info.venue ? `<span>${info.venue}</span>` : ''}
+          ${!can ? `<span style="cursor:pointer;color:var(--gold);font-size:10px;" onclick="openStats('${m.id}','${m.homeName}','${m.awayName}')">📊 สถิติวง</span>` : ''}
         </div>
       </div>
       <div class="mrow">
@@ -1157,6 +1216,86 @@ function closeHelp(e) {
   if (e.target === document.getElementById('help-modal')) {
     document.getElementById('help-modal').classList.remove('open');
   }
+}
+
+// ══════════════════════════════════════════════════
+//  MATCH STATS MODAL
+// ══════════════════════════════════════════════════
+async function openStats(matchId, homeName, awayName) {
+  document.getElementById('stats-modal').classList.add('open');
+  document.getElementById('stats-content').innerHTML =
+    '<div class="loading"><div class="spin"></div>กำลังโหลดสถิติ...</div>';
+  try {
+    const r = await gasCall('getMatchStats', { matchId });
+    renderStats(r, homeName, awayName);
+  } catch(e) {
+    document.getElementById('stats-content').innerHTML =
+      '<div class="loading" style="color:var(--red)">โหลดไม่ได้ ลองใหม่</div>';
+  }
+}
+
+function closeStats(e) {
+  if (e.target === document.getElementById('stats-modal'))
+    document.getElementById('stats-modal').classList.remove('open');
+}
+
+function renderStats(s, homeName, awayName) {
+  const maxPct = Math.max(s.homePct, s.drawPct, s.awayPct);
+  const winnerHome = s.homePct === maxPct && s.homePct > 0 ? 'winner' : '';
+  const winnerDraw = s.drawPct === maxPct && s.drawPct > 0 ? 'winner' : '';
+  const winnerAway = s.awayPct === maxPct && s.awayPct > 0 ? 'winner' : '';
+
+  const topScoresHtml = s.topScores.length ? `
+    <div class="stats-scores-title">สกอร์ที่ทายมากสุด</div>
+    <div class="stats-scores">
+      ${s.topScores.map(t => `
+        <div class="stats-score-chip">
+          ${t.score} <span class="chip-pct">${t.pct}%</span>
+        </div>`).join('')}
+    </div>` : '';
+
+  document.getElementById('stats-content').innerHTML = `
+    <div class="stats-title">${homeName} vs ${awayName}</div>
+    <div class="stats-sub">ทายไปแล้ว ${s.totalPred} คน · ไม่ทาย ${s.notPred} คน จากทั้งหมด ${s.totalUsers} คน</div>
+
+    <div class="stats-result">
+      <div class="stats-col ${winnerHome}">
+        <div class="sc-label">${homeName}<br/>ชนะ</div>
+        <div class="sc-pct">${s.homePct}%</div>
+        <div class="sc-count">${s.home} คน</div>
+      </div>
+      <div class="stats-col ${winnerDraw}">
+        <div class="sc-label">เสมอ</div>
+        <div class="sc-pct">${s.drawPct}%</div>
+        <div class="sc-count">${s.draw} คน</div>
+      </div>
+      <div class="stats-col ${winnerAway}">
+        <div class="sc-label">${awayName}<br/>ชนะ</div>
+        <div class="sc-pct">${s.awayPct}%</div>
+        <div class="sc-count">${s.away} คน</div>
+      </div>
+    </div>
+
+    <div class="stats-bar-wrap">
+      <div class="stats-bar-row">
+        <div class="stats-bar-lbl">${homeName}</div>
+        <div class="stats-bar"><div class="stats-bar-fill home" style="width:${s.homePct}%"></div></div>
+        <div class="stats-bar-pct">${s.homePct}%</div>
+      </div>
+      <div class="stats-bar-row">
+        <div class="stats-bar-lbl">เสมอ</div>
+        <div class="stats-bar"><div class="stats-bar-fill draw" style="width:${s.drawPct}%"></div></div>
+        <div class="stats-bar-pct">${s.drawPct}%</div>
+      </div>
+      <div class="stats-bar-row">
+        <div class="stats-bar-lbl">${awayName}</div>
+        <div class="stats-bar"><div class="stats-bar-fill away" style="width:${s.awayPct}%"></div></div>
+        <div class="stats-bar-pct">${s.awayPct}%</div>
+      </div>
+    </div>
+
+    ${topScoresHtml}
+  `;
 }
 
 // ══════════════════════════════════════════════════
