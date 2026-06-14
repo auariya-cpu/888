@@ -580,9 +580,16 @@
 </div>
 
 <!-- MATCH STATS MODAL -->
-<div class="stats-modal" id="stats-modal" onclick="closeStats(event)">
+<div class="stats-modal" id="stats-modal">
   <div class="stats-sheet" id="stats-sheet">
-    <div class="stats-handle"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+      <div class="stats-handle" style="margin:0;"></div>
+      <button onclick="closeStats()" style="
+        background:none;border:none;color:var(--muted);
+        font-size:20px;cursor:pointer;padding:0 0 0 16px;
+        line-height:1;
+      ">×</button>
+    </div>
     <div id="stats-content">
       <div class="loading"><div class="spin"></div>กำลังโหลด...</div>
     </div>
@@ -1324,7 +1331,11 @@ function closeHelp(e) {
 // ══════════════════════════════════════════════════
 //  MATCH STATS MODAL
 // ══════════════════════════════════════════════════
-async function openStats(matchId, homeName, awayName) {
+function closeStats() {
+  document.getElementById('stats-modal').classList.remove('open');
+}
+
+async function openStats(matchId) {
   document.getElementById('stats-modal').classList.add('open');
   document.getElementById('stats-content').innerHTML =
     '<div class="loading"><div class="spin"></div>กำลังโหลดสถิติ...</div>';
