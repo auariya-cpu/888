@@ -1247,7 +1247,7 @@ function mcard(m) {
         <div class="minfo-right">
           <span style="color:var(--text);font-weight:600">${info.datetime}</span>
           ${info.venue ? `<span>${info.venue}</span>` : ''}
-          ${!can ? `<span style="cursor:pointer;color:var(--gold);font-size:10px;" onclick="openStats('${m.id}','${m.homeName}','${m.awayName}')">📊 สถิติวง</span>` : ''}
+          ${!can ? `<span style="cursor:pointer;color:var(--gold);font-size:10px;" onclick="openStats('${m.id}')">📊 สถิติวง</span>` : ''}
         </div>
       </div>
       <div class="mrow">
@@ -1328,25 +1328,45 @@ async function openStats(matchId, homeName, awayName) {
   document.getElementById('stats-modal').classList.add('open');
   document.getElementById('stats-content').innerHTML =
     '<div class="loading"><div class="spin"></div>กำลังโหลดสถิติ...</div>';
+
+  // หาข้อมูลแมตช์จริงจาก S.matches
+  const match = S.matches.find(m => m.id === matchId) || {};
+
   try {
     const r = await gasCall('getMatchStats', { matchId });
-    renderStats(r, homeName, awayName);
+    renderStats(r, match);
   } catch(e) {
     document.getElementById('stats-content').innerHTML =
       '<div class="loading" style="color:var(--red)">โหลดไม่ได้ ลองใหม่</div>';
   }
 }
 
-function closeStats(e) {
-  if (e.target === document.getElementById('stats-modal'))
-    document.getElementById('stats-modal').classList.remove('open');
-}
+function renderStats(s, match) {
+  const homeName = match.homeName || '';
+  const awayName = match.awayName || '';
+  const homeFlag = match.homeFlag || '🏳️';
+  const awayFlag = match.awayFlag || '🏳️';
 
-function renderStats(s, homeName, awayName) {
-  const maxPct = Math.max(s.homePct, s.drawPct, s.awayPct);
+  const maxPct     = Math.max(s.homePct, s.drawPct, s.awayPct);
   const winnerHome = s.homePct === maxPct && s.homePct > 0 ? 'winner' : '';
   const winnerDraw = s.drawPct === maxPct && s.drawPct > 0 ? 'winner' : '';
   const winnerAway = s.awayPct === maxPct && s.awayPct > 0 ? 'winner' : '';
+
+  // ผลจริง
+  const effStatus = getEffectiveStatus(match);
+  const isDone    = effStatus === 'finished';
+  const hsReal    = match.homeScoreReg !== null && match.homeScoreReg !== undefined ? match.homeScoreReg : match.homeScore;
+  const asReal    = match.awayScoreReg !== null && match.awayScoreReg !== undefined ? match.awayScoreReg : match.awayScore;
+
+  let resultBadge = '';
+  if (isDone && hsReal !== null && asReal !== null) {
+    resultBadge = `<span style="
+      font-family:'Bebas Neue',sans-serif;font-size:22px;
+      color:var(--gold);letter-spacing:2px;
+    ">${hsReal} - ${asReal}</span>`;
+  } else if (effStatus === 'live') {
+    resultBadge = `<span style="font-size:11px;color:var(--red)"><span class="live-dot"></span>LIVE</span>`;
+  }
 
   const topScoresHtml = s.topScores.length ? `
     <div class="stats-scores-title">สกอร์ที่ทายมากสุด</div>
@@ -1358,7 +1378,10 @@ function renderStats(s, homeName, awayName) {
     </div>` : '';
 
   document.getElementById('stats-content').innerHTML = `
-    <div class="stats-title">${homeName} vs ${awayName}</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+      <div class="stats-title">${homeFlag} ${homeName} vs ${awayFlag} ${awayName}</div>
+      ${resultBadge}
+    </div>
     <div class="stats-sub">ทายไปแล้ว ${s.totalPred} คน · ไม่ทาย ${s.notPred} คน จากทั้งหมด ${s.totalUsers} คน</div>
 
     <div class="stats-result">
