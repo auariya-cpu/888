@@ -321,9 +321,15 @@
     }
     .pdone {
       margin-top: 7px; padding: 6px 10px;
-      background: rgba(6,199,85,.07); border: 1px solid rgba(6,199,85,.2);
-      border-radius: 6px; font-size: 11px; color: var(--green);
+      background: rgba(255,255,255,.04); border: 1px solid var(--line);
+      border-radius: 6px; font-size: 11px;
+      display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
     }
+    .pd-result.correct { color: var(--green); font-weight: 700; }
+    .pd-result.wrong   { color: var(--red);   font-weight: 700; }
+    .pd-score.correct  { color: var(--green); }
+    .pd-score.wrong    { color: var(--red); }
+    .pd-pending        { color: var(--muted); }
 
     /* MATCH STATS MODAL */
     .stats-modal {
@@ -376,6 +382,10 @@
       animation: spin .7s linear infinite; margin: 0 auto 8px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
+    .loading {
+      text-align: center; padding: 28px 16px;
+      color: var(--muted); font-size: 12px; letter-spacing: .3px;
+    }
     .toast {
       position: fixed; bottom: 18px; left: 50%;
       transform: translateX(-50%) translateY(60px);
@@ -1156,14 +1166,44 @@ function mcard(m) {
     scoreEl = `<div class="svs">VS</div>`;
   }
 
-  // ทายที่บันทึกไว้
-  const predResultTxt = pr.result === 'home' ? m.homeName+' ชนะ'
-                      : pr.result === 'away' ? m.awayName+' ชนะ'
-                      : pr.result === 'draw' ? 'เสมอ' : '';
-  const predScoreTxt  = (pr.homeScore!==undefined && pr.awayScore!==undefined)
-    ? ` · สกอร์ ${pr.homeScore}-${pr.awayScore}` : '';
-  const pd = pr.result
-    ? `<div class="pdone">${predResultTxt}${predScoreTxt}</div>` : '';
+  // ทายที่บันทึกไว้ — แสดงสีถูก/ผิดถ้าแมตช์จบแล้ว
+  let pd = '';
+  if (pr.result) {
+    // หาผลจริง 90 นาที
+    const hsReg = m.homeScoreReg !== null && m.homeScoreReg !== undefined ? m.homeScoreReg : m.homeScore;
+    const asReg = m.awayScoreReg !== null && m.awayScoreReg !== undefined ? m.awayScoreReg : m.awayScore;
+    let actualResult = null;
+    if (done && hsReg !== null && asReg !== null) {
+      if (hsReg > asReg) actualResult = 'home';
+      else if (asReg > hsReg) actualResult = 'away';
+      else actualResult = 'draw';
+    }
+
+    const resultTxt = pr.result === 'home' ? m.homeName+' ชนะ'
+                    : pr.result === 'away' ? m.awayName+' ชนะ' : 'เสมอ';
+
+    let resultClass = 'pd-pending', scoreClass = 'pd-pending';
+    let resultIcon = '', scoreIcon = '';
+
+    if (actualResult !== null) {
+      const resultOk = pr.result === actualResult;
+      const scoreOk  = pr.homeScore !== undefined && pr.awayScore !== undefined
+                    && Number(pr.homeScore) === Number(hsReg)
+                    && Number(pr.awayScore) === Number(asReg);
+      resultClass = resultOk ? 'pd-result correct' : 'pd-result wrong';
+      scoreClass  = scoreOk  ? 'pd-score correct'  : 'pd-score wrong';
+      resultIcon  = resultOk ? '✓' : '✗';
+      scoreIcon   = scoreOk  ? '✓' : '✗';
+    }
+
+    const scoreTxt = (pr.homeScore !== undefined && pr.awayScore !== undefined)
+      ? `<span class="${scoreClass}">${scoreIcon} ${pr.homeScore}-${pr.awayScore}</span>` : '';
+
+    pd = `<div class="pdone">
+      <span class="${resultClass}">${resultIcon} ${resultTxt}</span>
+      ${scoreTxt}
+    </div>`;
+  }
 
   const canPredict = can;
 
