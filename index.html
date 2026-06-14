@@ -1029,6 +1029,7 @@ function getEffectiveStatus(m) {
 
 function setTab(t, el) {
   S.tab = t;
+  stopCountdown();
   document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
   el.classList.add('active'); renderMatches();
 }
@@ -1039,8 +1040,70 @@ function renderMatches() {
   if (S.tab !== 'all') {
     ms = ms.filter(m => getEffectiveStatus(m) === S.tab);
   }
-  if (!ms.length) { ml.innerHTML='<div class="loading">ไม่มีแมตช์ในหมวดนี้</div>'; return; }
+  if (!ms.length) {
+    ml.innerHTML = getEmptyState(S.tab);
+    // ถ้า tab Live ให้เริ่ม countdown
+    if (S.tab === 'live') startCountdown();
+    return;
+  }
+  stopCountdown();
   ml.innerHTML = ms.map(m => mcard(m)).join('');
+}
+
+let _countdownTimer = null;
+
+function stopCountdown() {
+  if (_countdownTimer) { clearInterval(_countdownTimer); _countdownTimer = null; }
+}
+
+function startCountdown() {
+  stopCountdown();
+  updateCountdown();
+  _countdownTimer = setInterval(updateCountdown, 1000);
+}
+
+function updateCountdown() {
+  const el = document.getElementById('countdown-text');
+  if (!el) { stopCountdown(); return; }
+
+  // หาแมตช์ upcoming ที่ใกล้ที่สุด
+  const now      = new Date();
+  const upcoming = S.matches
+    .filter(m => getEffectiveStatus(m) === 'upcoming' && m.matchDate)
+    .map(m => ({ ...m, kickoff: new Date(m.matchDate) }))
+    .filter(m => m.kickoff > now)
+    .sort((a, b) => a.kickoff - b.kickoff);
+
+  if (!upcoming.length) {
+    el.textContent = 'ไม่มีแมตช์ที่กำลังจะมาถึง';
+    return;
+  }
+
+  const next    = upcoming[0];
+  const diff    = next.kickoff - now;
+  const h       = Math.floor(diff / 3600000);
+  const m       = Math.floor((diff % 3600000) / 60000);
+  const s       = Math.floor((diff % 60000) / 1000);
+  const timeStr = h > 0
+    ? `${h} ชม. ${String(m).padStart(2,'0')} นาที`
+    : `${m} นาที ${String(s).padStart(2,'0')} วินาที`;
+
+  el.innerHTML = `แมตช์ถัดไป<br/><span style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold);letter-spacing:2px;">${timeStr}</span><br/><span style="font-size:11px;color:var(--muted)">${next.homeFlag} ${next.homeName} vs ${next.awayFlag} ${next.awayName}</span>`;
+}
+
+function getEmptyState(tab) {
+  if (tab === 'live') {
+    return `
+      <div style="text-align:center;padding:32px 20px;">
+        <div style="font-size:11px;color:var(--muted);letter-spacing:1px;margin-bottom:12px;">NO LIVE MATCH</div>
+        <div id="countdown-text" style="font-size:14px;color:var(--text);line-height:2;">
+          กำลังคำนวณ...
+        </div>
+      </div>`;
+  }
+  if (tab === 'upcoming') return `<div style="text-align:center;padding:28px;font-size:13px;color:var(--muted);">ยังไม่มีแมตช์ที่กำลังจะแข่ง</div>`;
+  if (tab === 'finished') return `<div style="text-align:center;padding:28px;font-size:13px;color:var(--muted);">ยังไม่มีแมตช์ที่จบแล้ว</div>`;
+  return `<div style="text-align:center;padding:28px;font-size:13px;color:var(--muted);">ไม่มีข้อมูล</div>`;
 }
 
 function fmtMatchInfo(matchDate, venue) {
