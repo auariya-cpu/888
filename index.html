@@ -433,7 +433,7 @@
         <div class="m-pts">2</div>
         <div class="m-rule-info">
           <div class="m-rule-name">ทายสกอร์ถูก</div>
-          <div class="m-rule-desc">ทายสกอร์ครบ <strong style="color:var(--text)">90 นาที เท่านั้น</strong> ไม่รวมต่อเวลาและจุดโทษ<br/>ทายถูกทั้งสองฝั่ง +2 pt<br/><span style="color:var(--gold)">ทายผลและทายสกอร์เป็นอิสระต่อกัน</span> เช่น ทายผลว่า A ชนะ แต่ทายสกอร์ว่า B นำก็ได้ ไม่ผิดกติกา</div>
+          <div class="m-rule-desc">ทายสกอร์ครบ <strong style="color:var(--text)">90 นาที + ทดเวลา เท่านั้น</strong> ไม่รวมต่อเวลาพิเศษและจุดโทษ<br/>ทายถูกทั้งสองฝั่ง +2 pt<br/><span style="color:var(--gold)">ทายผลและทายสกอร์เป็นอิสระต่อกัน</span> เช่น ทายผลว่า A ชนะ แต่ทายสกอร์ว่า B นำก็ได้ ไม่ผิดกติกา</div>
         </div>
       </div>
       <div class="m-rule-row">
@@ -487,7 +487,7 @@
   <div class="rule-box">
     <div class="rule-label">กติกาสะสมแต้ม</div>
     <div class="rule-row"><span class="rule-pt">1</span><span class="rule-txt">pt — ทายผลถูก (ชนะ / แพ้ / เสมอ)</span></div>
-    <div class="rule-row"><span class="rule-pt">2</span><span class="rule-txt">pt — ทายสกอร์ถูกทั้งคู่</span></div>
+    <div class="rule-row"><span class="rule-pt">2</span><span class="rule-txt">pt — ทายสกอร์ถูกทั้งคู่ (90 นาที + ทดเวลา)</span></div>
     <div class="rule-row"><span class="rule-pt">5</span><span class="rule-txt">pt — ทายแชมป์ถูก (เลือกได้ 2 ทีม)</span></div>
     <div class="rule-row"><span class="rule-pt" style="color:var(--red);font-size:16px">-½</span><span class="rule-txt">pt — ลืมทายแมตช์ที่จบแล้ว</span></div>
   </div>
@@ -1233,7 +1233,7 @@ function mcard(m) {
         <button class="pbtn ${pr.result==='draw'?'sel':''}" onclick="setRes('${m.id}','draw')">เสมอ</button>
         <button class="pbtn ${pr.result==='away'?'sel':''}" onclick="setRes('${m.id}','away')">${m.awayName}<br/>ชนะ</button>
       </div>
-      <div class="ppanel-label" style="margin-top:8px">ทายสกอร์ 90 นาที <span style="color:var(--muted);font-weight:400">(ไม่รวมต่อเวลา/จุดโทษ)</span></div>
+      <div class="ppanel-label" style="margin-top:8px">ทายสกอร์ 90 นาที + ทดเวลา <span style="color:var(--muted);font-weight:400">(ไม่รวมต่อเวลาพิเศษ/จุดโทษ)</span></div>
       <div class="pscore">
         <input class="sinpn" type="number" min="0" max="20" placeholder="0" id="hs-${safe}" value="${pr.homeScore??''}" />
         <span class="ssep">—</span>
