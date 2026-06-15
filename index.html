@@ -969,7 +969,7 @@ async function loadLb() {
       return;
     }
     const gc = ['g1','g2','g3'];
-    const totalMatches = S.matches.filter(m => m.status === 'finished').length || 1;
+    const totalMatches = r.finishedCount || S.matches.filter(m => m.status === 'finished' || m.status === 'completed').length || 1;
     const myLineId = S.user?.lineId;
 
     // สร้าง map ชื่อสมมติที่การันตีไม่ซ้ำ
