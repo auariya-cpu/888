@@ -1057,9 +1057,12 @@ function renderMatches() {
   if (S.tab !== 'all') {
     ms = ms.filter(m => getEffectiveStatus(m) === S.tab);
   }
+  // tab จบแล้ว → เรียงล่าสุดก่อน
+  if (S.tab === 'finished') {
+    ms = [...ms].sort((a, b) => new Date(b.matchDate) - new Date(a.matchDate));
+  }
   if (!ms.length) {
     ml.innerHTML = getEmptyState(S.tab);
-    // ถ้า tab Live ให้เริ่ม countdown
     if (S.tab === 'live') startCountdown();
     return;
   }
