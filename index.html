@@ -1223,7 +1223,6 @@ function mcard(m) {
     // hasSaved = เคยบันทึกไปแล้ว (มี result ใน S.preds ที่ sync จาก server)
     // ใช้ flag _saved เพื่อแยกว่า "เลือกแล้ว" กับ "บันทึกแล้ว"
     const hasSaved   = !!(pr._saved && pr.result);
-    const saveFaded  = hasSaved ? 'opacity:.45;' : '';
     const saveBtnTxt = hasSaved ? 'แก้ไข' : 'บันทึก';
     pp = `
     <div class="ppanel">
@@ -1238,7 +1237,7 @@ function mcard(m) {
         <input class="sinpn" type="number" min="0" max="20" placeholder="0" id="hs-${safe}" value="${pr.homeScore??''}" />
         <span class="ssep">—</span>
         <input class="sinpn" type="number" min="0" max="20" placeholder="0" id="as-${safe}" value="${pr.awayScore??''}" />
-        <button class="psavebtn" style="${saveFaded}" onclick="savePred('${m.id}')">${saveBtnTxt}</button>
+        <button class="psavebtn" onclick="savePred('${m.id}')">${saveBtnTxt}</button>
       </div>
     </div>`;
   } else if (pr.result) {
