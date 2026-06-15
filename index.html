@@ -1382,38 +1382,31 @@ function renderStats(s, match) {
   }
 
   const topScoresHtml = (() => {
-    const chips = s.topScores.map(t => `
-      <div class="stats-score-chip" style="${t.isCorrect ? 'border-color:var(--green);' : ''}">
-        <span style="${t.isCorrect ? 'color:var(--green);font-weight:700;' : ''}">${t.score}</span>
-        <span class="chip-pct" style="${t.isCorrect ? 'color:var(--green);' : ''}">${t.pct}%</span>
-      </div>`).join('');
+    if (!s.topScores.length && !s.myScoreData && !s.realScoreData) return '';
 
-    // สกอร์ของ user ถ้าไม่ติด top 3
-    const myChip = s.myScoreData ? `
-      <div class="stats-score-chip" style="border-color:var(--gold);">
-        <span style="color:var(--gold);">คุณ ${s.myScoreData.score}</span>
-        <span class="chip-pct" style="color:var(--gold);">${s.myScoreData.pct}%</span>
-      </div>` : '';
+    // รวม top3 + สกอร์ถูก (ถ้าไม่ติด top3) + สกอร์ user (ถ้าไม่ติด top3 และไม่ใช่สกอร์ถูก)
+    const allChips = [...s.topScores];
 
-    // สกอร์จริงถ้าไม่ติด top 3 และไม่ใช่สกอร์ของ user
-    const realChip = s.realScoreData ? `
-      <div class="stats-score-chip" style="border-color:var(--green);">
-        <span style="color:var(--green);font-weight:700;">✓ ${s.realScoreData.score}</span>
-        <span class="chip-pct" style="color:var(--green);">${s.realScoreData.pct}%</span>
-      </div>` : '';
+    // ถ้าสกอร์จริงไม่ติด top3 → เพิ่มเข้าไป
+    if (s.realScoreData) allChips.push(s.realScoreData);
 
-    if (!s.topScores.length && !s.myScoreData) return '';
+    // ถ้าสกอร์ user ไม่ติด top3 และไม่ใช่สกอร์จริง → เพิ่มเข้าไป
+    if (s.myScoreData && (!s.realScoreData || s.myScoreData.score !== s.realScoreData.score)) {
+      allChips.push(s.myScoreData);
+    }
+
+    const chips = allChips.map(t => {
+      const isCorrect = t.isCorrect;
+      const pct = t.pct || 0;
+      return `<div class="stats-score-chip" style="${isCorrect ? 'border-color:var(--green);' : ''}">
+        <span style="${isCorrect ? 'color:var(--green);font-weight:700;' : ''}">${isCorrect ? '✓ ' : ''}${t.score}</span>
+        <span class="chip-pct" style="${isCorrect ? 'color:var(--green);' : ''}">${pct}%</span>
+      </div>`;
+    }).join('');
 
     return `
       <div class="stats-scores-title">สกอร์ที่ทายมากสุด</div>
-      <div class="stats-scores">${chips}${myChip}${realChip}</div>
-      ${s.realScore && !s.realInTop && !s.realScoreData && !s.topScores.find(t=>t.isCorrect) && !s.myScoreData?.isCorrect ? `
-        <div style="display:flex;justify-content:flex-end;align-items:center;gap:6px;margin-top:8px;">
-          <span style="font-size:11px;color:var(--muted);">ผลจริง</span>
-          <span style="font-size:13px;color:var(--green);font-weight:700;">${s.realScore}</span>
-          <span style="font-size:11px;color:var(--green);">0%</span>
-        </div>` : ''}
-    `;
+      <div class="stats-scores">${chips}</div>`;
   })();
 
   document.getElementById('stats-content').innerHTML = `
