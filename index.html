@@ -1099,8 +1099,11 @@ function updateCountdown() {
     return;
   }
 
-  const next    = upcoming[0];
-  const diff    = next.kickoff - now;
+  const nextTime = upcoming[0].kickoff.getTime();
+  // ดึงทุกแมตช์ที่ kickoff เวลาเดียวกันกับแมตช์ที่ใกล้สุด (ไม่ใช่แค่ตัวแรก)
+  const nextMatches = upcoming.filter(m => m.kickoff.getTime() === nextTime);
+
+  const diff    = nextTime - now;
   const h       = Math.floor(diff / 3600000);
   const m       = Math.floor((diff % 3600000) / 60000);
   const s       = Math.floor((diff % 60000) / 1000);
@@ -1108,7 +1111,13 @@ function updateCountdown() {
     ? `${h} ชม. ${String(m).padStart(2,'0')} นาที`
     : `${m} นาที ${String(s).padStart(2,'0')} วินาที`;
 
-  el.innerHTML = `แมตช์ถัดไป<br/><span style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold);letter-spacing:2px;">${timeStr}</span><br/><span style="font-size:11px;color:var(--muted)">${next.homeFlag} ${next.homeName} vs ${next.awayFlag} ${next.awayName}</span>`;
+  const matchLines = nextMatches
+    .map(nm => `<div>${nm.homeFlag} ${nm.homeName} vs ${nm.awayFlag} ${nm.awayName}</div>`)
+    .join('');
+
+  const label = nextMatches.length > 1 ? `แมตช์ถัดไป (${nextMatches.length} คู่)` : 'แมตช์ถัดไป';
+
+  el.innerHTML = `${label}<br/><span style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold);letter-spacing:2px;">${timeStr}</span><br/><span style="font-size:11px;color:var(--muted);line-height:1.6;">${matchLines}</span>`;
 }
 
 function getEmptyState(tab) {
