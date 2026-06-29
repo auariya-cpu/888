@@ -1099,11 +1099,21 @@ function updateCountdown() {
     return;
   }
 
-  const nextTime = upcoming[0].kickoff.getTime();
-  // ดึงทุกแมตช์ที่ kickoff เวลาเดียวกันกับแมตช์ที่ใกล้สุด (ไม่ใช่แค่ตัวแรก)
-  const nextMatches = upcoming.filter(m => m.kickoff.getTime() === nextTime);
+  const nextKickoff = upcoming[0].kickoff;
 
-  const diff    = nextTime - now;
+  // หา "วันไทย" ของแมตช์ที่ใกล้สุด (UTC+7) เพื่อกรองแมตช์อื่นในวันเดียวกัน
+  const thaiDateKey = (d) => {
+    const t = new Date(d.getTime() + 7 * 60 * 60 * 1000);
+    return t.getUTCFullYear() + '-' + t.getUTCMonth() + '-' + t.getUTCDate();
+  };
+  const nextDayKey = thaiDateKey(nextKickoff);
+
+  // ดึงทุกแมตช์ที่อยู่ในวันไทยเดียวกันกับแมตช์ที่ใกล้สุด เรียงตามเวลา
+  const nextMatches = upcoming
+    .filter(m => thaiDateKey(m.kickoff) === nextDayKey)
+    .sort((a, b) => a.kickoff - b.kickoff);
+
+  const diff    = nextKickoff - now;
   const h       = Math.floor(diff / 3600000);
   const m       = Math.floor((diff % 3600000) / 60000);
   const s       = Math.floor((diff % 60000) / 1000);
@@ -1111,11 +1121,21 @@ function updateCountdown() {
     ? `${h} ชม. ${String(m).padStart(2,'0')} นาที`
     : `${m} นาที ${String(s).padStart(2,'0')} วินาที`;
 
+  // แสดงเวลา kickoff (เวลาไทย) ของแต่ละแมตช์ควบคู่กับชื่อทีม
+  const fmtTime = (d) => {
+    const t = new Date(d.getTime() + 7 * 60 * 60 * 1000);
+    return String(t.getUTCHours()).padStart(2,'0') + '.' + String(t.getUTCMinutes()).padStart(2,'0');
+  };
+
   const matchLines = nextMatches
-    .map(nm => `<div>${nm.homeFlag} ${nm.homeName} vs ${nm.awayFlag} ${nm.awayName}</div>`)
+    .map(nm => `<div>${fmtTime(nm.kickoff)} · ${nm.homeFlag} ${nm.homeName} vs ${nm.awayFlag} ${nm.awayName}</div>`)
     .join('');
 
-  const label = nextMatches.length > 1 ? `แมตช์ถัดไป (${nextMatches.length} คู่)` : 'แมตช์ถัดไป';
+  const todayKey = thaiDateKey(now);
+  const dayLabel = nextDayKey === todayKey ? 'วันนี้' : 'วันที่จะถึง';
+  const label = nextMatches.length > 1
+    ? `แมตช์ที่จะแข่ง${dayLabel} (${nextMatches.length} คู่)`
+    : `แมตช์${dayLabel}`;
 
   el.innerHTML = `${label}<br/><span style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold);letter-spacing:2px;">${timeStr}</span><br/><span style="font-size:11px;color:var(--muted);line-height:1.6;">${matchLines}</span>`;
 }
