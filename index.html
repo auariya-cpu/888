@@ -1086,7 +1086,6 @@ function updateCountdown() {
   const el = document.getElementById('countdown-text');
   if (!el) { stopCountdown(); return; }
 
-  // หาแมตช์ upcoming ที่ใกล้ที่สุด
   const now      = new Date();
   const upcoming = S.matches
     .filter(m => getEffectiveStatus(m) === 'upcoming' && m.matchDate)
@@ -1113,31 +1112,39 @@ function updateCountdown() {
     .filter(m => thaiDateKey(m.kickoff) === nextDayKey)
     .sort((a, b) => a.kickoff - b.kickoff);
 
-  const diff    = nextKickoff - now;
-  const h       = Math.floor(diff / 3600000);
-  const m       = Math.floor((diff % 3600000) / 60000);
-  const s       = Math.floor((diff % 60000) / 1000);
-  const timeStr = h > 0
-    ? `${h} ชม. ${String(m).padStart(2,'0')} นาที`
-    : `${m} นาที ${String(s).padStart(2,'0')} วินาที`;
+  // วันที่แบบไทยอ่านง่าย เช่น "วันอังคารที่ 30 มิ.ย."
+  const dayNames   = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+  const monthNames = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  const thaiNext   = new Date(nextKickoff.getTime() + 7 * 60 * 60 * 1000);
+  const dateLabel  = `วัน${dayNames[thaiNext.getUTCDay()]}ที่ ${thaiNext.getUTCDate()} ${monthNames[thaiNext.getUTCMonth()]}`;
 
-  // แสดงเวลา kickoff (เวลาไทย) ของแต่ละแมตช์ควบคู่กับชื่อทีม
   const fmtTime = (d) => {
     const t = new Date(d.getTime() + 7 * 60 * 60 * 1000);
     return String(t.getUTCHours()).padStart(2,'0') + '.' + String(t.getUTCMinutes()).padStart(2,'0');
   };
 
-  const matchLines = nextMatches
-    .map(nm => `<div>${fmtTime(nm.kickoff)} · ${nm.homeFlag} ${nm.homeName} vs ${nm.awayFlag} ${nm.awayName}</div>`)
-    .join('');
+  const fmtCountdown = (kickoff) => {
+    const diff = kickoff - now;
+    const h = Math.floor(diff / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    return h > 0
+      ? `${h} ชม. ${String(m).padStart(2,'0')} นาที`
+      : `${m} นาที ${String(s).padStart(2,'0')} วินาที`;
+  };
 
-  const todayKey = thaiDateKey(now);
-  const dayLabel = nextDayKey === todayKey ? 'วันนี้' : 'วันที่จะถึง';
+  // แต่ละแมตช์มี countdown ของตัวเอง แสดงเป็นบล็อกแยกกัน
+  const matchBlocks = nextMatches.map(nm => `
+    <div style="margin-top:10px;">
+      <span style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);letter-spacing:1px;">${fmtCountdown(nm.kickoff)}</span>
+      <div style="font-size:11px;color:var(--muted);margin-top:2px;">${fmtTime(nm.kickoff)} · ${nm.homeFlag} ${nm.homeName} vs ${nm.awayFlag} ${nm.awayName}</div>
+    </div>`).join('');
+
   const label = nextMatches.length > 1
-    ? `แมตช์ที่จะแข่ง${dayLabel} (${nextMatches.length} คู่)`
-    : `แมตช์${dayLabel}`;
+    ? `แมตช์ที่จะแข่ง${dateLabel} (${nextMatches.length} คู่)`
+    : `แมตช์${dateLabel}`;
 
-  el.innerHTML = `${label}<br/><span style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold);letter-spacing:2px;">${timeStr}</span><br/><span style="font-size:11px;color:var(--muted);line-height:1.6;">${matchLines}</span>`;
+  el.innerHTML = `<div style="font-size:13px;color:var(--text);">${label}</div>${matchBlocks}`;
 }
 
 function getEmptyState(tab) {
