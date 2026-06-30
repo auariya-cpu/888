@@ -1201,13 +1201,15 @@ function mcard(m) {
     scoreEl = `<div class="snum">${hs}-${as}</div>
                <div style="font-size:10px;color:var(--red);margin-top:2px"><span class="live-dot"></span>LIVE</div>`;
   } else if (done) {
-    // จบแล้ว — แสดง FT และ 90 นาที
-    const reg = (m.homeScoreReg!==null && m.homeScoreReg!==undefined)
-      ? `<div class="snum">${m.homeScoreReg}-${m.awayScoreReg}</div><div class="score-label">90 นาที</div>`
-      : `<div class="snum">${m.homeScore??'-'}-${m.awayScore??'-'}</div>`;
-    const ft  = (m.homeScore!==null && m.homeScore!==undefined && m.homeScore !== m.homeScoreReg)
-      ? `<div class="score-ft">FT ${m.homeScore}-${m.awayScore}</div>` : '';
-    scoreEl = reg + ft;
+    // จบแล้ว — homeScore/awayScore คือสกอร์ 90 นาที+ทดเวลาเสมอ (ใช้ตัดสินการทาย)
+    const main = `<div class="snum">${m.homeScore??'-'}-${m.awayScore??'-'}</div><div class="score-label">90 นาที + ทดเวลา</div>`;
+
+    // ถ้ามีจุดโทษ → แสดงผลจบจริงในวงเล็บ
+    const hasPen = m.homePen !== null && m.homePen !== undefined && m.awayPen !== null && m.awayPen !== undefined;
+    const penLine = hasPen
+      ? `<div class="score-ft">จุดโทษ ${m.homePen}-${m.awayPen}</div>` : '';
+
+    scoreEl = main + penLine;
   } else {
     scoreEl = `<div class="svs">VS</div>`;
   }
@@ -1409,10 +1411,12 @@ function renderStats(s, match) {
 
   let resultBadge = '';
   if (isDone && hsReal !== null && asReal !== null) {
+    const hasPen = match.homePen !== null && match.homePen !== undefined && match.awayPen !== null && match.awayPen !== undefined;
+    const penText = hasPen ? ` <span style="font-size:11px;color:var(--muted);">(จุดโทษ ${match.homePen}-${match.awayPen})</span>` : '';
     resultBadge = `<span style="
       font-family:'Bebas Neue',sans-serif;font-size:22px;
       color:var(--gold);letter-spacing:2px;
-    ">${hsReal} - ${asReal}</span>`;
+    ">${hsReal} - ${asReal}</span>${penText}`;
   } else if (effStatus === 'live') {
     resultBadge = `<span style="font-size:11px;color:var(--red)"><span class="live-dot"></span>LIVE</span>`;
   }
