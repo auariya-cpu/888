@@ -559,7 +559,7 @@
   <!-- Leaderboard -->
   <div class="sec">
     <button class="lb-tog" onclick="toggleLb()">
-      ตารางสถิติของคุณ
+      <span>ตารางสถิติ <span id="lb-remaining" style="font-size:10px;color:var(--muted);font-weight:400;"></span></span>
       <span id="lbarr" style="color:var(--muted)">▼</span>
     </button>
     <div class="lb-body" id="lbb">
@@ -815,9 +815,23 @@ async function loadMatches() {
     const r = await gasCall('getMatches');
     S.matches = r.matches || [];
     renderMatches();
+    updateLbRemainingLabel();
   } catch(e) {
     document.getElementById('ml').innerHTML =
       '<div class="loading" style="color:var(--red)">โหลดแมตช์ไม่ได้ ลองใหม่</div>';
+  }
+}
+
+function updateLbRemainingLabel() {
+  const el = document.getElementById('lb-remaining');
+  if (!el) return;
+  const upcoming = S.matches.filter(m => getEffectiveStatus(m) === 'upcoming');
+  const x = upcoming.length;
+  const y = x * 3; // ผลถูก +1, สกอร์ถูก +2 = 3 pt ต่อแมตช์
+  if (x > 0) {
+    el.textContent = `(เหลือ ${x} คู่, ${y}+5 คะแนน)`;
+  } else {
+    el.textContent = '';
   }
 }
 
