@@ -937,43 +937,6 @@ async function toggleLb() {
   if (open && !lbDone) { lbDone = true; await loadLb(); }
 }
 
-// ชื่อนักบอลสมมติ 20 ชื่อ (ไม่ซ้ำกันในวงเดียวกัน)
-const FAKE_NAMES = [
-  'Ronaldo','Messi','Neymar','Mbappé','Haaland',
-  'Salah','Benzema','Kane','De Bruyne','Modric',
-  'Lewandowski','Vinicius','Pedri','Bellingham','Osimhen',
-  'Saka','Pulisic','Musiala','Gavi','Camavinga',
-];
-const FAKE_AVATARS = [
-  '🧑‍🦱','👨‍🦰','👩‍🦱','🧑‍🦳','👨‍🦲',
-  '🧔','👩‍🦰','🧑','👨','🧑‍🦲',
-];
-
-function hashId(lineId) {
-  return lineId.split('').reduce((s, c) => s + c.charCodeAt(0), 0);
-}
-
-// สร้าง map lineId → ชื่อสมมติ การันตีไม่ซ้ำ
-function buildFakeNameMap(leaderboard, myLineId) {
-  const others = leaderboard
-    .filter(u => u.lineId !== myLineId)
-    .map(u => ({ lineId: u.lineId, hash: hashId(u.lineId) }))
-    .sort((a, b) => a.hash - b.hash);
-
-  const nameMap = {}, avatarMap = {}, usedNames = new Set();
-  others.forEach(u => {
-    let idx = u.hash % FAKE_NAMES.length, tries = 0;
-    while (usedNames.has(FAKE_NAMES[idx]) && tries < FAKE_NAMES.length) {
-      idx = (idx + 1) % FAKE_NAMES.length;
-      tries++;
-    }
-    nameMap[u.lineId]   = FAKE_NAMES[idx];
-    avatarMap[u.lineId] = FAKE_AVATARS[(u.hash + 7) % FAKE_AVATARS.length];
-    usedNames.add(FAKE_NAMES[idx]);
-  });
-  return { nameMap, avatarMap };
-}
-
 async function loadLb() {
   try {
     const r  = await gasCall('getLeaderboard');
@@ -986,9 +949,6 @@ async function loadLb() {
     const totalMatches = r.finishedCount || S.matches.filter(m => m.status === 'finished' || m.status === 'completed').length || 1;
     const myLineId = S.user?.lineId;
 
-    // สร้าง map ชื่อสมมติที่การันตีไม่ซ้ำ
-    const { nameMap, avatarMap } = buildFakeNameMap(lb, myLineId);
-
     document.getElementById('lbb').innerHTML = lb.map((u, i) => {
       const isMe = u.lineId === myLineId;
       const cr = u.correctResults || 0;
@@ -996,10 +956,10 @@ async function loadLb() {
       const pctResult = Math.round(cr / totalMatches * 100);
       const pctScore  = Math.round(cs / totalMatches * 100);
 
-      const displayName = isMe ? u.name : (nameMap[u.lineId] || 'Unknown');
-      const avatarHtml  = isMe
+      // แสดงชื่อจริงและรูปจริงทุกคน
+      const avatarHtml = u.picture
         ? `<img class="lb-av" src="${u.picture||''}" referrerpolicy="no-referrer" onerror="this.style.display='none'" />`
-        : `<div class="lb-av" style="display:flex;align-items:center;justify-content:center;font-size:20px;background:var(--line);">${avatarMap[u.lineId] || '👤'}</div>`;
+        : `<div class="lb-av" style="display:flex;align-items:center;justify-content:center;font-size:20px;background:var(--line);">👤</div>`;
 
       const meTag = isMe
         ? `<span style="font-size:9px;background:var(--gold);color:var(--bg);border-radius:4px;padding:1px 5px;margin-left:5px;font-weight:700;">คุณ</span>`
@@ -1010,7 +970,7 @@ async function loadLb() {
         <div class="lb-no ${gc[i]||''}">${i+1}</div>
         ${avatarHtml}
         <div class="lb-info">
-          <div class="lb-name">${displayName}${meTag}</div>
+          <div class="lb-name">${u.name}${meTag}</div>
           <div class="lb-stat">${u.points} pt · ผลถูก ${cr} · สกอร์ถูก ${cs}${u.missed > 0 ? ` · <span style="color:var(--red)">ลืมทาย ${u.missed} (-${u.penalty} pt)</span>` : ''}</div>
           <div class="lb-acc">
             <div class="lb-acc-row">
