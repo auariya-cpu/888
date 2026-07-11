@@ -803,9 +803,15 @@ async function loadUser() {
     renderPicks();
     if (r.championDeadline) {
       const d = new Date(r.championDeadline);
-      document.getElementById('dl').textContent =
-        'ถึง ' + d.toLocaleDateString('th-TH',{day:'numeric',month:'short'}) + ' ' +
-        d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+      const now = new Date();
+      const expired = now > d;
+      const dlEl = document.getElementById('dl');
+      if (expired) {
+        dlEl.innerHTML = '<span style="color:var(--red);font-weight:700;">* หมดเวลาทายแชมป์</span>';
+      } else {
+        dlEl.textContent = 'ถึง ' + d.toLocaleDateString('th-TH',{day:'numeric',month:'short'}) + ' ' +
+          d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+      }
     }
   } catch(e) { console.warn('loadUser:', e.message); }
 }
@@ -899,7 +905,7 @@ function renderPicks() {
     const el = document.getElementById(`ps${i+1}`), pk = S.picks[i];
     if (pk) {
       el.className = 'slot filled';
-      el.innerHTML = `<span class="fl">${pk.flag||pk.f||''}</span><span class="nm">${pk.name||pk.n}</span><span class="rm" onclick="rmPick(${i})">✕ ลบออก</span>`;
+      el.innerHTML = `<span class="fl">${pk.flag||pk.f||''}</span><span class="nm">${pk.name||pk.n}</span>`;
     } else {
       el.className = 'slot';
       el.innerHTML = `<span class="emp">— ทีมที่ ${i+1} —</span>`;
