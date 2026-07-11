@@ -420,6 +420,12 @@
     <div class="modal-handle"></div>
     <div class="modal-title">กติกา & เงินรางวัล</div>
 
+    <!-- สรุปผลการทาย -->
+    <div class="m-section" id="prize-summary-section" style="display:none;">
+      <div class="m-section-title">สรุปผลการทาย</div>
+      <div id="prize-summary-content"></div>
+    </div>
+
     <div class="m-section">
       <div class="m-section-title">วิธีสะสมคะแนน</div>
       <div class="m-rule-row">
@@ -546,13 +552,15 @@
         <div class="slot" id="ps1"><span class="emp">— ทีมที่ 1 —</span></div>
         <div class="slot" id="ps2"><span class="emp">— ทีมที่ 2 —</span></div>
       </div>
-      <div class="swrap">
-        <input class="sinp" id="tsearch" type="text"
-          placeholder="พิมพ์ค้นหาทีม เช่น Argentina, Brazil..."
-          autocomplete="off" autocorrect="off" spellcheck="false" />
-        <div class="tdd" id="tdd"></div>
+      <div id="champ-input-area">
+        <div class="swrap">
+          <input class="sinp" id="tsearch" type="text"
+            placeholder="พิมพ์ค้นหาทีม เช่น Argentina, Brazil..."
+            autocomplete="off" autocorrect="off" spellcheck="false" />
+          <div class="tdd" id="tdd"></div>
+        </div>
+        <button class="bsave" id="bsave" onclick="saveChamp()">บันทึกทีมแชมป์</button>
       </div>
-      <button class="bsave" id="bsave" onclick="saveChamp()">บันทึกทีมแชมป์</button>
     </div>
   </div>
 
@@ -806,8 +814,10 @@ async function loadUser() {
       const now = new Date();
       const expired = now > d;
       const dlEl = document.getElementById('dl');
+      const inputArea = document.getElementById('champ-input-area');
       if (expired) {
         dlEl.innerHTML = '<span style="color:var(--red);font-weight:700;">* หมดเวลาทายแชมป์</span>';
+        if (inputArea) inputArea.style.display = 'none';
       } else {
         dlEl.textContent = 'ถึง ' + d.toLocaleDateString('th-TH',{day:'numeric',month:'short'}) + ' ' +
           d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
@@ -1353,6 +1363,69 @@ async function savePred(matchId) {
 // ══════════════════════════════════════════════════
 function openHelp() {
   document.getElementById('help-modal').classList.add('open');
+  renderPrizeSummary();
+}
+
+async function renderPrizeSummary() {
+  const section = document.getElementById('prize-summary-section');
+  const content = document.getElementById('prize-summary-content');
+  if (!section || !content) return;
+
+  try {
+    const r  = await gasCall('getLeaderboard');
+    const lb = r.leaderboard || [];
+    const total = lb.length;
+    if (!total) return;
+
+    const pot      = total * 500;
+    const prize1   = Math.round(pot * 0.50);
+    const prize2   = Math.round(pot * 0.30);
+    const prize3   = Math.round(pot * 0.15);
+    const prize4   = Math.round(pot * 0.05);
+
+    const allFinished = S.matches.length > 0 && S.matches.every(m => getEffectiveStatus(m) !== 'upcoming' && getEffectiveStatus(m) !== 'live');
+
+    const rankHtml = [1,2,3].map(rank => {
+      const u = lb[rank-1];
+      const colors = ['var(--gold)','#94a3b8','#b45309'];
+      const prizes = [prize1, prize2, prize3];
+      const color  = colors[rank-1];
+      const prize  = prizes[rank-1];
+
+      const avatarHtml = allFinished && u
+        ? (u.picture
+          ? `<img src="${u.picture}" referrerpolicy="no-referrer" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid ${color};display:block;" onerror="this.style.display='none'" />`
+          : `<div style="width:44px;height:44px;border-radius:50%;background:var(--line);display:flex;align-items:center;justify-content:center;font-size:20px;border:2px solid ${color};">👤</div>`)
+        : `<div style="width:44px;height:44px;border-radius:50%;background:var(--line);display:flex;align-items:center;justify-content:center;font-size:20px;border:2px solid ${color};color:${color};font-weight:700;">?</div>`;
+
+      const nameHtml = allFinished && u
+        ? `<div style="font-size:12px;font-weight:700;margin-top:4px;color:var(--text);">${u.name}</div>`
+        : `<div style="font-size:12px;color:var(--muted);margin-top:4px;">???</div>`;
+
+      return `
+        <div style="text-align:center;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:14px;color:${color};margin-bottom:6px;">อันดับ ${rank}</div>
+          <div style="display:flex;justify-content:center;">${avatarHtml}</div>
+          ${nameHtml}
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:${color};margin-top:4px;">${prize.toLocaleString()} ฿</div>
+        </div>`;
+    }).join('');
+
+    content.innerHTML = `
+      <div style="text-align:center;margin-bottom:12px;">
+        <div style="font-size:11px;color:var(--muted);">เงินรางวัลรวม (${total} คน × 500 ฿)</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--gold);">${pot.toLocaleString()} ฿</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:10px;">
+        ${rankHtml}
+      </div>
+      ${!allFinished ? `<div style="font-size:10px;color:var(--muted);text-align:center;">* รูปและชื่อผู้ชนะจะเปิดเผยเมื่อแข่งขันครบทุกคู่</div>` : ''}
+      <div style="font-size:10px;color:var(--muted);text-align:right;margin-top:4px;">ทำบุญ ${prize4.toLocaleString()} ฿</div>
+    `;
+    section.style.display = 'block';
+  } catch(e) {
+    console.warn('renderPrizeSummary:', e.message);
+  }
 }
 function closeHelp(e) {
   // ปิดเมื่อกด background หรือกด sheet ก็ยังเปิดอยู่
